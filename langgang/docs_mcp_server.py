@@ -5,10 +5,8 @@ This module provides MCP server integration for accessing LangChain and LangGrap
 documentation to assist with development and code generation.
 """
 
-import json
 import logging
-from typing import Any, Dict, List, Optional
-from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

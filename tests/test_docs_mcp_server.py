@@ -2,7 +2,6 @@
 Tests for documentation MCP server
 """
 
-import pytest
 from langgang.docs_mcp_server import DocumentationMCPServer
 
 

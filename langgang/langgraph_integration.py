@@ -4,10 +4,10 @@ LangGraph integration for LangGang
 This module provides LangGraph state graphs for multi-step template generation workflows.
 """
 
+import tempfile
 from typing import Annotated, Sequence, TypedDict
 from langchain_core.messages import BaseMessage
 from langgraph.graph import StateGraph, END
-from langgraph.prebuilt import ToolNode
 import operator
 
 
@@ -153,7 +153,8 @@ def generate_code_node(state: TemplateGenerationState) -> TemplateGenerationStat
     template_name = state.get("template_name", "")
     context = state.get("context_variables", {})
     
-    output_dir = "/tmp/generated_projects"
+    # Use cross-platform temporary directory
+    output_dir = tempfile.gettempdir() + "/generated_projects"
     
     if template_type == "cookiecutter":
         result = server.generate_from_cookiecutter(template_name, output_dir, context)

@@ -5,12 +5,44 @@ This module implements a Model Context Protocol (MCP) server for AI-powered
 code templating using LangChain, LangGraph, Cookiecutter, Copier, and Maven archetypes.
 """
 
-import json
 import logging
+import re
 from typing import Any, Dict, List, Optional
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+
+def _validate_path(path: str, param_name: str) -> None:
+    """Validate path to prevent directory traversal attacks.
+    
+    Args:
+        path: Path to validate
+        param_name: Parameter name for error messages
+        
+    Raises:
+        ValueError: If path contains directory traversal sequences
+    """
+    if ".." in path or path.startswith("/"):
+        raise ValueError(f"{param_name} must not contain '..' or start with '/'")
+
+
+def _sanitize_property_value(value: str) -> str:
+    """Sanitize property values for Maven commands.
+    
+    Args:
+        value: Property value to sanitize
+        
+    Returns:
+        Sanitized value
+        
+    Raises:
+        ValueError: If value contains shell metacharacters
+    """
+    # Only allow alphanumeric, dash, underscore, dot, and forward slash
+    if not re.match(r'^[a-zA-Z0-9._/-]+$', value):
+        raise ValueError(f"Property value contains invalid characters: {value}")
+    return value
 
 
 class LangGangMCPServer:
@@ -74,9 +106,21 @@ class LangGangMCPServer:
         """
         from cookiecutter.main import cookiecutter
         
+        # Validate inputs to prevent path traversal
+        try:
+            _validate_path(template_name, "template_name")
+        except ValueError as e:
+            return {"error": str(e)}
+        
         template_path = self.cookiecutter_dir / template_name
         if not template_path.exists():
             return {"error": f"Template not found: {template_name}"}
+        
+        # Ensure template_path is within cookiecutter_dir
+        try:
+            template_path.resolve().relative_to(self.cookiecutter_dir.resolve())
+        except ValueError:
+            return {"error": "Invalid template path"}
         
         try:
             result = cookiecutter(
@@ -108,9 +152,21 @@ class LangGangMCPServer:
         """
         from copier import run_copy
         
+        # Validate inputs to prevent path traversal
+        try:
+            _validate_path(template_name, "template_name")
+        except ValueError as e:
+            return {"error": str(e)}
+        
         template_path = self.copier_dir / template_name
         if not template_path.exists():
             return {"error": f"Template not found: {template_name}"}
+        
+        # Ensure template_path is within copier_dir
+        try:
+            template_path.resolve().relative_to(self.copier_dir.resolve())
+        except ValueError:
+            return {"error": "Invalid template path"}
         
         try:
             run_copy(
@@ -143,17 +199,43 @@ class LangGangMCPServer:
         """
         import subprocess
         
+        # Validate inputs to prevent path traversal
+        try:
+            _validate_path(archetype_name, "archetype_name")
+        except ValueError as e:
+            return {"error": str(e)}
+        
         archetype_path = self.maven_dir / archetype_name
         if not archetype_path.exists():
             return {"error": f"Archetype not found: {archetype_name}"}
         
-        # Build Maven command
+        # Ensure archetype_path is within maven_dir
+        try:
+            archetype_path.resolve().relative_to(self.maven_dir.resolve())
+        except ValueError:
+            return {"error": "Invalid archetype path"}
+        
+        # Build Maven command with sanitized properties
         cmd = ["mvn", "archetype:generate"]
         cmd.extend(["-DarchetypeGroupId=com.langgang"])
-        cmd.extend([f"-DarchetypeArtifactId={archetype_name}"])
         
-        for key, value in properties.items():
-            cmd.append(f"-D{key}={value}")
+        # Sanitize archetype_name for command
+        try:
+            sanitized_archetype = _sanitize_property_value(archetype_name)
+            cmd.extend([f"-DarchetypeArtifactId={sanitized_archetype}"])
+        except ValueError as e:
+            return {"error": str(e)}
+        
+        # Sanitize all property values to prevent command injection
+        try:
+            for key, value in properties.items():
+                # Validate key name
+                if not re.match(r'^[a-zA-Z0-9._-]+$', key):
+                    return {"error": f"Invalid property key: {key}"}
+                sanitized_value = _sanitize_property_value(value)
+                cmd.append(f"-D{key}={sanitized_value}")
+        except ValueError as e:
+            return {"error": str(e)}
         
         cmd.append("-DinteractiveMode=false")
         

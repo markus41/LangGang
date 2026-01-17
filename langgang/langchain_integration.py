@@ -4,7 +4,7 @@ LangChain integration for LangGang
 This module provides LangChain tools and chains for AI-powered template generation.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from langchain_core.tools import BaseTool
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -36,7 +36,17 @@ class TemplateGenerationTool(BaseTool):
         output_directory: str,
         context: Dict[str, Any]
     ) -> str:
-        """Execute template generation."""
+        """Execute template generation.
+        
+        Args:
+            template_type: Type of template (cookiecutter, copier, maven)
+            template_name: Name of the template
+            output_directory: Directory for generated code
+            context: Template variables
+            
+        Returns:
+            Success message or error description
+        """
         from langgang.mcp_server import LangGangMCPServer
         
         server = LangGangMCPServer()
@@ -59,6 +69,29 @@ class TemplateGenerationTool(BaseTool):
         if "error" in result:
             return f"Error: {result['error']}"
         return f"Successfully generated code at: {result.get('output', output_directory)}"
+    
+    async def _arun(
+        self,
+        template_type: str,
+        template_name: str,
+        output_directory: str,
+        context: Dict[str, Any]
+    ) -> str:
+        """Async execute template generation.
+        
+        Note: Currently delegates to synchronous version as template
+        generation tools don't have async APIs.
+        
+        Args:
+            template_type: Type of template (cookiecutter, copier, maven)
+            template_name: Name of the template
+            output_directory: Directory for generated code
+            context: Template variables
+            
+        Returns:
+            Success message or error description
+        """
+        return self._run(template_type, template_name, output_directory, context)
 
 
 class ListTemplatesTool(BaseTool):

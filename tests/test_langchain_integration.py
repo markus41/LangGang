@@ -2,7 +2,6 @@
 Tests for LangChain integration
 """
 
-import pytest
 from langgang.langchain_integration import (
     TemplateGenerationTool,
     ListTemplatesTool,

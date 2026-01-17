@@ -93,6 +93,27 @@ pipeline:
             steps:
               - step:
                   type: Run
+                  name: Validate Secrets
+                  identifier: validate_secrets
+                  spec:
+                    shell: Bash
+                    command: |
+                      # Validate required secrets exist
+                      if [ -z "$PYPI_TOKEN" ]; then
+                        echo "Error: PYPI_TOKEN secret not configured"
+                        exit 1
+                      fi
+                      if [ -z "$GH_TOKEN" ]; then
+                        echo "Error: GITHUB_TOKEN secret not configured"
+                        exit 1
+                      fi
+                      echo "All required secrets are configured"
+                    envVariables:
+                      PYPI_TOKEN: <+secrets.getValue("pypi_token")>
+                      GH_TOKEN: <+secrets.getValue("github_token")>
+
+              - step:
+                  type: Run
                   name: Publish to PyPI
                   identifier: publish_pypi
                   spec:
