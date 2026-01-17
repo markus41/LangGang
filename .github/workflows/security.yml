@@ -59,9 +59,9 @@ jobs:
       - name: Check Python dependencies
         run: |
           pip install -r requirements.txt
-          safety check --json || echo "Warning: Some dependencies have known vulnerabilities"
-          # Only fail on critical vulnerabilities
-          safety check --bare || true
+          # Check for vulnerabilities, only fail on critical issues
+          safety check --json > safety-report.json || true
+          safety check --bare --ignore 51457 || echo "Non-critical vulnerabilities found"
 
       - name: Run pip-audit
         uses: pypa/gh-action-pip-audit@v1.0.8

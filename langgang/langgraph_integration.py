@@ -146,6 +146,7 @@ def generate_code_node(state: TemplateGenerationState) -> TemplateGenerationStat
     Returns:
         Updated state with generation results
     """
+    import os
     from langgang.mcp_server import LangGangMCPServer
     
     server = LangGangMCPServer()
@@ -153,8 +154,8 @@ def generate_code_node(state: TemplateGenerationState) -> TemplateGenerationStat
     template_name = state.get("template_name", "")
     context = state.get("context_variables", {})
     
-    # Use cross-platform temporary directory
-    output_dir = tempfile.gettempdir() + "/generated_projects"
+    # Use cross-platform temporary directory with proper path joining
+    output_dir = os.path.join(tempfile.gettempdir(), "generated_projects")
     
     if template_type == "cookiecutter":
         result = server.generate_from_cookiecutter(template_name, output_dir, context)

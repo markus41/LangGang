@@ -104,7 +104,7 @@ pipeline:
                         exit 1
                       fi
                       if [ -z "$GH_TOKEN" ]; then
-                        echo "Error: GITHUB_TOKEN secret not configured"
+                        echo "Error: GH_TOKEN secret not configured"
                         exit 1
                       fi
                       echo "All required secrets are configured"
