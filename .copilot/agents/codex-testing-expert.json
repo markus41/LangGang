@@ -1,0 +1,53 @@
+{
+  "name": "codex-testing-expert",
+  "description": "GitHub Codex agent specialized in testing strategies and pytest patterns",
+  "version": "1.0.0",
+  "scope": "tests",
+  "capabilities": [
+    "pytest_fixtures",
+    "mocking",
+    "parametrized_tests",
+    "async_tests",
+    "coverage_optimization",
+    "integration_testing"
+  ],
+  "context": {
+    "testing_framework": "pytest",
+    "mocking_library": "unittest.mock",
+    "async_testing": "pytest-asyncio",
+    "coverage_tool": "pytest-cov",
+    "patterns": {
+      "fixture": "@pytest.fixture\ndef my_fixture():\n    # Setup\n    resource = create_resource()\n    yield resource\n    # Teardown\n    cleanup(resource)",
+      "parametrize": "@pytest.mark.parametrize('input,expected', [\n    ('test1', 'result1'),\n    ('test2', 'result2'),\n])\ndef test_function(input, expected):\n    assert function(input) == expected",
+      "mock": "from unittest.mock import Mock, patch\n\n@patch('module.function')\ndef test_with_mock(mock_func):\n    mock_func.return_value = 'mocked'\n    result = call_function()\n    mock_func.assert_called_once()",
+      "async_test": "@pytest.mark.asyncio\nasync def test_async_function():\n    result = await async_function()\n    assert result == expected"
+    }
+  },
+  "suggestions": {
+    "when_in": "tests/**",
+    "offer": [
+      "Use fixtures for shared test setup",
+      "Parametrize tests for multiple inputs",
+      "Mock external dependencies",
+      "Test error cases and edge cases",
+      "Use descriptive test names",
+      "Group related tests in classes",
+      "Add markers for slow/integration tests"
+    ]
+  },
+  "test_structure": {
+    "naming": "test_<function>_<scenario>_<expected_result>",
+    "organization": "Arrange-Act-Assert pattern",
+    "fixtures": "conftest.py for shared fixtures",
+    "markers": "Use @pytest.mark for categorization"
+  },
+  "best_practices": [
+    "One assertion per test when possible",
+    "Test behavior, not implementation",
+    "Use meaningful test names",
+    "Keep tests independent",
+    "Mock external dependencies",
+    "Aim for high coverage of critical paths",
+    "Use fixtures for reusable setup"
+  ]
+}

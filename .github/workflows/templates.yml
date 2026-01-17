@@ -1,0 +1,128 @@
+name: Template Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'templates/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'templates/**'
+  workflow_dispatch:
+
+jobs:
+  test-cookiecutter:
+    name: Test Cookiecutter Templates
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        template:
+          - python-langchain-project
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Cookiecutter
+        run: pip install cookiecutter
+
+      - name: Test template generation
+        run: |
+          cd /tmp
+          cookiecutter $GITHUB_WORKSPACE/templates/cookiecutter/${{ matrix.template }} \
+            --no-input \
+            project_name="Test Project" \
+            author="CI Test"
+
+      - name: Verify generated project
+        run: |
+          cd /tmp/test_project
+          if [ -f "requirements.txt" ]; then
+            echo "✓ requirements.txt generated"
+          fi
+          if [ -f "README.md" ]; then
+            echo "✓ README.md generated"
+          fi
+
+  test-copier:
+    name: Test Copier Templates
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        template:
+          - langgraph-agent
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Copier
+        run: pip install copier
+
+      - name: Test template generation
+        run: |
+          cd /tmp
+          copier copy --defaults \
+            $GITHUB_WORKSPACE/templates/copier/${{ matrix.template }} \
+            test-agent
+
+      - name: Verify generated project
+        run: |
+          cd /tmp/test-agent
+          if [ -f "requirements.txt" ]; then
+            echo "✓ requirements.txt generated"
+          fi
+          if [ -f "README.md" ]; then
+            echo "✓ README.md generated"
+          fi
+
+  test-maven:
+    name: Test Maven Archetypes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        archetype:
+          - langchain-java-archetype
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Verify archetype structure
+        run: |
+          cd templates/maven/${{ matrix.archetype }}
+          if [ -f "pom.xml" ]; then
+            echo "✓ pom.xml exists"
+          fi
+          if [ -f "src/main/resources/META-INF/maven/archetype-metadata.xml" ]; then
+            echo "✓ archetype-metadata.xml exists"
+          fi
+
+      - name: Validate Maven archetype
+        run: |
+          cd templates/maven/${{ matrix.archetype }}
+          mvn validate
+        continue-on-error: true

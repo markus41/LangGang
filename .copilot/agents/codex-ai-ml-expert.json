@@ -1,0 +1,61 @@
+{
+  "name": "codex-ai-ml-expert",
+  "description": "GitHub Codex agent specialized in AI/ML patterns, LangChain, and LangGraph",
+  "version": "1.0.0",
+  "scope": "langgang",
+  "capabilities": [
+    "llm_integration",
+    "prompt_engineering",
+    "chain_composition",
+    "agent_orchestration",
+    "embeddings",
+    "vector_stores",
+    "retrieval_augmented_generation"
+  ],
+  "context": {
+    "frameworks": ["langchain", "langgraph", "openai", "anthropic"],
+    "patterns": {
+      "llm_chain": "from langchain_core.prompts import ChatPromptTemplate\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(temperature=0)\nprompt = ChatPromptTemplate.from_template('Translate {text} to {language}')\nchain = prompt | llm\nresult = chain.invoke({'text': 'hello', 'language': 'spanish'})",
+      "rag_pattern": "from langchain.vectorstores import FAISS\nfrom langchain.embeddings import OpenAIEmbeddings\nfrom langchain.chains import RetrievalQA\n\nvectorstore = FAISS.from_documents(docs, OpenAIEmbeddings())\nretriever = vectorstore.as_retriever()\nqa_chain = RetrievalQA.from_chain_type(llm, retriever=retriever)",
+      "agent_pattern": "from langchain.agents import AgentExecutor, create_openai_functions_agent\nfrom langchain import hub\n\nprompt = hub.pull('hwchase17/openai-functions-agent')\nagent = create_openai_functions_agent(llm, tools, prompt)\nagent_executor = AgentExecutor(agent=agent, tools=tools)\nresult = agent_executor.invoke({'input': 'query'})",
+      "langgraph_state": "from typing import TypedDict, Annotated\nfrom langgraph.graph import StateGraph, END\nimport operator\n\nclass State(TypedDict):\n    messages: Annotated[list, operator.add]\n    \nworkflow = StateGraph(State)\nworkflow.add_node('process', process_node)\nworkflow.set_entry_point('process')\nworkflow.add_edge('process', END)\ngraph = workflow.compile()"
+    }
+  },
+  "suggestions": {
+    "when_in": "langgang/**",
+    "offer": [
+      "Use streaming for long-running LLM calls",
+      "Implement retry logic for API calls",
+      "Cache expensive operations",
+      "Use async for parallel operations",
+      "Add timeout handling",
+      "Implement proper error handling for LLM failures",
+      "Use structured output when possible"
+    ]
+  },
+  "prompt_engineering": {
+    "best_practices": [
+      "Be specific and clear in instructions",
+      "Provide examples (few-shot learning)",
+      "Use system messages for context",
+      "Break complex tasks into steps",
+      "Use structured output formats",
+      "Add constraints and guardrails"
+    ],
+    "templates": {
+      "few_shot": "Given examples:\nInput: {example1_input}\nOutput: {example1_output}\n\nInput: {example2_input}\nOutput: {example2_output}\n\nNow process:\nInput: {input}",
+      "chain_of_thought": "Let's solve this step by step:\n1. First, {step1}\n2. Then, {step2}\n3. Finally, {step3}\n\nProblem: {problem}",
+      "structured_output": "Extract information in JSON format:\n{\n  'field1': 'value',\n  'field2': 'value'\n}\n\nText: {text}"
+    }
+  },
+  "best_practices": [
+    "Always handle LLM API errors gracefully",
+    "Implement rate limiting and backoff",
+    "Use structured outputs when possible",
+    "Cache repeated queries",
+    "Monitor token usage",
+    "Version prompts for reproducibility",
+    "Test with different LLM providers",
+    "Implement fallback strategies"
+  ]
+}

@@ -1,0 +1,195 @@
+pipeline:
+  name: LangGang Production Deploy
+  identifier: langgang_prod_deploy
+  projectIdentifier: langgang
+  orgIdentifier: default
+  tags:
+    environment: production
+  stages:
+    - stage:
+        name: Pre-Deployment Checks
+        identifier: pre_deployment
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Version Check
+                  identifier: version_check
+                  spec:
+                    shell: Bash
+                    command: |
+                      echo "Checking version in pyproject.toml..."
+                      VERSION=$(grep '^version' pyproject.toml | cut -d'"' -f2)
+                      echo "Version: $VERSION"
+                      echo $VERSION > version.txt
+
+              - step:
+                  type: Run
+                  name: Run All Tests
+                  identifier: run_tests
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install -r requirements.txt
+                      pip install pytest pytest-cov
+                      pytest tests/ -v --cov=langgang --cov-report=term
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Abort
+
+              - step:
+                  type: Run
+                  name: Build Package
+                  identifier: build_package
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install build
+                      python -m build
+                      ls -lh dist/
+
+    - stage:
+        name: Deployment Approval
+        identifier: deploy_approval
+        type: Approval
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: HarnessApproval
+                  name: Production Deployment Approval
+                  identifier: prod_approval
+                  spec:
+                    approvalMessage: "Approve deployment to production?"
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - account.Production_Approvers
+                      users:
+                        - <+pipeline.triggeredBy.email>
+                    minimumCount: 2
+                    disallowPipelineExecutor: true
+                  timeout: 7d
+
+    - stage:
+        name: Deploy to PyPI
+        identifier: deploy_pypi
+        type: Deployment
+        spec:
+          deploymentType: Custom
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Publish to PyPI
+                  identifier: publish_pypi
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install twine
+                      twine check dist/*
+                      
+                      # Upload to PyPI
+                      twine upload dist/* \
+                        --username __token__ \
+                        --password $PYPI_TOKEN \
+                        --verbose
+                    envVariables:
+                      PYPI_TOKEN: <+secrets.getValue("pypi_token")>
+
+              - step:
+                  type: Run
+                  name: Create GitHub Release
+                  identifier: github_release
+                  spec:
+                    shell: Bash
+                    command: |
+                      VERSION=$(cat version.txt)
+                      gh release create "v${VERSION}" \
+                        --title "Release v${VERSION}" \
+                        --notes "See CHANGELOG.md for details" \
+                        dist/*
+                    envVariables:
+                      GH_TOKEN: <+secrets.getValue("github_token")>
+
+    - stage:
+        name: Post-Deployment
+        identifier: post_deployment
+        type: CI
+        spec:
+          cloneCodebase: false
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Verify Deployment
+                  identifier: verify_deploy
+                  spec:
+                    shell: Bash
+                    command: |
+                      # Wait for package to be available
+                      sleep 60
+                      
+                      # Try to install from PyPI
+                      pip install langgang --upgrade
+                      python -c "import langgang; print(f'LangGang version: {langgang.__version__}')"
+
+              - step:
+                  type: Run
+                  name: Notify Team
+                  identifier: notify_team
+                  spec:
+                    shell: Bash
+                    command: |
+                      echo "Deployment successful!"
+                      # Add Slack/email notification here
+                  when:
+                    stageStatus: Success
+
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: ManualIntervention
+                spec:
+                  timeout: 2h
+                  onTimeout:
+                    action:
+                      type: StageRollback
+
+  notificationRules:
+    - name: Deployment Success
+      identifier: deploy_success
+      pipelineEvents:
+        - type: PipelineSuccess
+      notificationMethod:
+        type: Email
+        spec:
+          userGroups:
+            - account.Engineering_Team
+          recipients:
+            - engineering@example.com
+
+    - name: Deployment Failure
+      identifier: deploy_failure
+      pipelineEvents:
+        - type: PipelineFailed
+      notificationMethod:
+        type: Slack
+        spec:
+          userGroups:
+            - account.Engineering_Team
+          webhookUrl: <+secrets.getValue("slack_webhook")>

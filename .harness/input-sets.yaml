@@ -1,0 +1,132 @@
+inputSet:
+  name: Development Environment
+  identifier: dev_environment
+  orgIdentifier: default
+  projectIdentifier: langgang
+  tags:
+    environment: development
+  pipeline:
+    identifier: langgang_cicd
+    stages:
+      - stage:
+          identifier: build_and_test
+          type: CI
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: setup_python
+                    type: Run
+                    spec:
+                      envVariables:
+                        ENV: development
+                        DEBUG: "true"
+                        LOG_LEVEL: DEBUG
+
+                - step:
+                    identifier: run_tests
+                    type: Run
+                    spec:
+                      envVariables:
+                        PYTEST_ARGS: "-v -s"
+
+      - stage:
+          identifier: deploy
+          type: Deployment
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: deploy_registry
+                    type: Run
+                    spec:
+                      envVariables:
+                        DEPLOY_TARGET: test-pypi
+                        PYPI_URL: https://test.pypi.org/legacy/
+
+---
+inputSet:
+  name: Staging Environment
+  identifier: staging_environment
+  orgIdentifier: default
+  projectIdentifier: langgang
+  tags:
+    environment: staging
+  pipeline:
+    identifier: langgang_cicd
+    stages:
+      - stage:
+          identifier: build_and_test
+          type: CI
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: setup_python
+                    type: Run
+                    spec:
+                      envVariables:
+                        ENV: staging
+                        DEBUG: "false"
+                        LOG_LEVEL: INFO
+
+      - stage:
+          identifier: deploy
+          type: Deployment
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: deploy_registry
+                    type: Run
+                    spec:
+                      envVariables:
+                        DEPLOY_TARGET: test-pypi
+                        PYPI_URL: https://test.pypi.org/legacy/
+
+---
+inputSet:
+  name: Production Environment
+  identifier: prod_environment
+  orgIdentifier: default
+  projectIdentifier: langgang
+  tags:
+    environment: production
+  pipeline:
+    identifier: langgang_cicd
+    stages:
+      - stage:
+          identifier: build_and_test
+          type: CI
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: setup_python
+                    type: Run
+                    spec:
+                      envVariables:
+                        ENV: production
+                        DEBUG: "false"
+                        LOG_LEVEL: WARNING
+
+                - step:
+                    identifier: run_tests
+                    type: Run
+                    spec:
+                      envVariables:
+                        PYTEST_ARGS: "-v --cov-fail-under=90"
+
+      - stage:
+          identifier: deploy
+          type: Deployment
+          spec:
+            execution:
+              steps:
+                - step:
+                    identifier: deploy_registry
+                    type: Run
+                    spec:
+                      envVariables:
+                        DEPLOY_TARGET: pypi
+                        PYPI_URL: https://upload.pypi.org/legacy/

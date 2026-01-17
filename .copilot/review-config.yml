@@ -1,0 +1,275 @@
+# GitHub Copilot Code Review Configuration
+
+# This file configures automated code review suggestions from GitHub Copilot
+
+review_rules:
+  # Python-specific rules
+  python:
+    - id: "type-hints-required"
+      severity: "warning"
+      message: "Function is missing type hints"
+      pattern: "def \\w+\\([^)]*\\)(?!\\s*->)"
+      fix_suggestion: "Add type hints to function signature"
+      
+    - id: "docstring-required"
+      severity: "warning"
+      message: "Public function missing docstring"
+      pattern: "^def [a-z]\\w+\\([^)]*\\):(?!\\s*\"\"\")"
+      fix_suggestion: "Add Google-style docstring"
+      
+    - id: "bare-except"
+      severity: "error"
+      message: "Bare except clause catches all exceptions"
+      pattern: "except:\\s*$"
+      fix_suggestion: "Specify exception types to catch"
+      
+    - id: "mutable-default-arg"
+      severity: "error"
+      message: "Mutable default argument"
+      pattern: "def \\w+\\([^)]*=\\s*\\[\\]"
+      fix_suggestion: "Use None as default and initialize in function body"
+      
+    - id: "print-statement"
+      severity: "info"
+      message: "Print statement in production code"
+      pattern: "^\\s*print\\("
+      fix_suggestion: "Use logging instead of print"
+
+  # LangChain-specific rules
+  langchain:
+    - id: "no-error-handling"
+      severity: "warning"
+      message: "LLM call without error handling"
+      pattern: "\\.invoke\\(|.run\\("
+      fix_suggestion: "Wrap LLM calls in try-except to handle API errors"
+      
+    - id: "no-streaming"
+      severity: "info"
+      message: "Consider using streaming for long operations"
+      pattern: "ChatOpenAI\\([^)]*\\)"
+      fix_suggestion: "Use streaming=True for better UX"
+      
+    - id: "no-timeout"
+      severity: "warning"
+      message: "LLM call without timeout"
+      pattern: "ChatOpenAI\\((?![^)]*timeout)"
+      fix_suggestion: "Add timeout parameter to prevent hanging"
+
+  # Testing rules
+  testing:
+    - id: "no-assertion"
+      severity: "error"
+      message: "Test function has no assertions"
+      pattern: "def test_\\w+\\([^)]*\\):(?:(?!assert).)*$"
+      fix_suggestion: "Add assertions to verify test expectations"
+      
+    - id: "multiple-assertions"
+      severity: "info"
+      message: "Test has multiple unrelated assertions"
+      pattern: "assert.*\\n.*assert.*\\n.*assert"
+      fix_suggestion: "Consider splitting into multiple test functions"
+      
+    - id: "no-test-docstring"
+      severity: "info"
+      message: "Test function missing descriptive docstring"
+      pattern: "def test_\\w+\\([^)]*\\):(?!\\s*\"\"\")"
+      fix_suggestion: "Add docstring explaining what is being tested"
+
+  # Security rules
+  security:
+    - id: "hardcoded-secret"
+      severity: "error"
+      message: "Possible hardcoded secret or API key"
+      pattern: "(api_key|password|secret|token)\\s*=\\s*['\"][^'\"]+['\"]"
+      fix_suggestion: "Use environment variables or secrets management"
+      
+    - id: "sql-injection"
+      severity: "error"
+      message: "Possible SQL injection vulnerability"
+      pattern: "execute\\([^)]*%s|execute\\([^)]*\\+\\s*\\w+"
+      fix_suggestion: "Use parameterized queries"
+      
+    - id: "unsafe-yaml-load"
+      severity: "error"
+      message: "Unsafe YAML loading"
+      pattern: "yaml\\.load\\((?![^)]*Loader=)"
+      fix_suggestion: "Use yaml.safe_load() instead"
+
+  # Code quality rules
+  quality:
+    - id: "long-function"
+      severity: "info"
+      message: "Function is too long (>50 lines)"
+      fix_suggestion: "Consider breaking into smaller functions"
+      
+    - id: "complex-condition"
+      severity: "info"
+      message: "Complex conditional expression"
+      pattern: "if.*and.*and.*or"
+      fix_suggestion: "Extract to named variable for clarity"
+      
+    - id: "magic-number"
+      severity: "info"
+      message: "Magic number in code"
+      pattern: "(?<!\\[)\\b[0-9]{2,}\\b(?!\\])"
+      fix_suggestion: "Extract to named constant"
+
+# Code smell detection
+code_smells:
+  - smell: "god_class"
+    description: "Class with too many responsibilities"
+    threshold:
+      methods: 20
+      lines: 500
+    fix: "Apply Single Responsibility Principle"
+    
+  - smell: "long_parameter_list"
+    description: "Function with too many parameters"
+    threshold:
+      parameters: 5
+    fix: "Use a configuration object or builder pattern"
+    
+  - smell: "duplicate_code"
+    description: "Repeated code blocks"
+    threshold:
+      lines: 6
+    fix: "Extract to shared function or class"
+    
+  - smell: "dead_code"
+    description: "Unreachable or unused code"
+    fix: "Remove dead code"
+
+# Suggested refactorings
+refactoring_suggestions:
+  - name: "extract_method"
+    when: "Code block is repeated or too complex"
+    benefit: "Improves readability and reusability"
+    
+  - name: "introduce_parameter_object"
+    when: "Function has many parameters"
+    benefit: "Simplifies function signature"
+    
+  - name: "replace_conditional_with_polymorphism"
+    when: "Complex if-elif chains based on type"
+    benefit: "More extensible and maintainable"
+    
+  - name: "introduce_assertion"
+    when: "Assumptions are not explicitly checked"
+    benefit: "Catches bugs earlier"
+
+# Performance optimization hints
+performance_hints:
+  - hint: "Use list comprehension"
+    when: "Building list with for loop"
+    improvement: "Faster and more Pythonic"
+    
+  - hint: "Use generator expression"
+    when: "Large list used only once"
+    improvement: "Reduces memory usage"
+    
+  - hint: "Cache expensive operations"
+    when: "Repeated calls with same inputs"
+    improvement: "Significantly faster for repeated operations"
+    
+  - hint: "Use async/await"
+    when: "I/O-bound operations in sequence"
+    improvement: "Better concurrency and throughput"
+
+# Documentation quality checks
+documentation_checks:
+  - check: "api_documentation"
+    required_sections:
+      - "description"
+      - "parameters"
+      - "returns"
+      - "examples"
+    
+  - check: "changelog"
+    format: "Keep a Changelog"
+    sections:
+      - "Added"
+      - "Changed"
+      - "Deprecated"
+      - "Removed"
+      - "Fixed"
+      - "Security"
+    
+  - check: "readme_completeness"
+    required_sections:
+      - "Installation"
+      - "Usage"
+      - "API Reference"
+      - "Contributing"
+      - "License"
+
+# Test quality metrics
+test_quality:
+  coverage:
+    minimum: 80
+    critical_modules: 95
+    
+  test_types:
+    - "Unit tests for individual functions"
+    - "Integration tests for workflows"
+    - "End-to-end tests for user scenarios"
+    
+  good_practices:
+    - "Use fixtures for common setup"
+    - "Parametrize similar test cases"
+    - "Mock external dependencies"
+    - "Test error cases and edge cases"
+    - "Keep tests fast and independent"
+
+# Commit message guidelines
+commit_guidelines:
+  format: "conventional_commits"
+  types:
+    - "feat: New feature"
+    - "fix: Bug fix"
+    - "docs: Documentation change"
+    - "style: Code style change"
+    - "refactor: Code refactoring"
+    - "perf: Performance improvement"
+    - "test: Test addition or modification"
+    - "chore: Build process or auxiliary tool changes"
+  
+  subject:
+    max_length: 72
+    style: "imperative"
+    capitalization: "lowercase"
+  
+  body:
+    wrap_at: 100
+    required_for: ["feat", "fix", "refactor"]
+
+# Review checklist
+review_checklist:
+  functionality:
+    - "Does the code do what it's supposed to?"
+    - "Are edge cases handled?"
+    - "Is error handling appropriate?"
+    
+  code_quality:
+    - "Is the code readable and maintainable?"
+    - "Are names descriptive?"
+    - "Is the logic clear and simple?"
+    
+  testing:
+    - "Are there tests for new functionality?"
+    - "Do tests cover error cases?"
+    - "Is test coverage adequate?"
+    
+  documentation:
+    - "Are public APIs documented?"
+    - "Is the README updated?"
+    - "Are comments helpful and necessary?"
+    
+  security:
+    - "Is input validated?"
+    - "Are secrets properly managed?"
+    - "Are there any security vulnerabilities?"
+    
+  performance:
+    - "Are there any obvious performance issues?"
+    - "Is caching used appropriately?"
+    - "Are database queries optimized?"
