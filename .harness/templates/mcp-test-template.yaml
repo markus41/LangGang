@@ -20,7 +20,8 @@ template:
         python -c "
         from <+spec.configuration.serverModule> import <+spec.configuration.serverClass>
         server = <+spec.configuration.serverClass>()
-        print(f'✓ {<+spec.configuration.serverName>} initialized successfully')
+        server_name = '<+spec.configuration.serverName>'
+        print(f'✓ {server_name} initialized successfully')
         "
         
         # Test server methods

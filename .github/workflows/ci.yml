@@ -129,7 +129,9 @@ jobs:
                      server = LangGangMCPServer(); \
                      templates = server.list_templates(); \
                      print(f'Templates found: {templates}'); \
-                     assert len(templates) == 3, 'Expected 3 template types'"
+                     assert 'cookiecutter' in templates, 'Cookiecutter templates not found'; \
+                     assert 'copier' in templates, 'Copier templates not found'; \
+                     assert 'maven' in templates, 'Maven templates not found'"
 
       - name: Test MCP documentation server
         run: |
