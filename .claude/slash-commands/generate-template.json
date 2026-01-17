@@ -1,0 +1,47 @@
+{
+  "command": "/generate-template",
+  "description": "Generate code from a template",
+  "usage": "/generate-template <type> <name> [options]",
+  "parameters": {
+    "type": {
+      "description": "Template type: cookiecutter, copier, or maven",
+      "required": true,
+      "type": "string",
+      "values": ["cookiecutter", "copier", "maven"]
+    },
+    "name": {
+      "description": "Template name from templates directory",
+      "required": true,
+      "type": "string"
+    },
+    "output": {
+      "description": "Output directory for generated code",
+      "required": false,
+      "type": "string",
+      "default": "./output"
+    },
+    "context": {
+      "description": "Template variables as JSON",
+      "required": false,
+      "type": "object"
+    }
+  },
+  "examples": [
+    {
+      "command": "/generate-template cookiecutter python-langchain-project",
+      "description": "Generate a Python LangChain project with default values"
+    },
+    {
+      "command": "/generate-template copier langgraph-agent --output=./my-agent",
+      "description": "Generate a LangGraph agent in specific directory"
+    },
+    {
+      "command": "/generate-template maven langchain-java-archetype --context='{\"groupId\":\"com.example\",\"artifactId\":\"my-app\"}'",
+      "description": "Generate a Java project with custom Maven coordinates"
+    }
+  ],
+  "implementation": {
+    "action": "Call MCP tool generate_from_cookiecutter, generate_from_copier, or generate_from_maven_archetype",
+    "response": "Show success message with output location or error details"
+  }
+}

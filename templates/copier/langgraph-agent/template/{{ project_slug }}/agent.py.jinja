@@ -1,0 +1,50 @@
+"""
+LangGraph agent implementation for {{ project_name }}
+"""
+
+from typing import Annotated, Sequence, TypedDict
+from langchain_core.messages import BaseMessage
+from langgraph.graph import StateGraph, END
+import operator
+
+
+class AgentState(TypedDict):
+    """State for the agent graph."""
+    messages: Annotated[Sequence[BaseMessage], operator.add]
+    input: str
+    output: str
+
+
+def process_input(state: AgentState) -> AgentState:
+    """Process user input."""
+    state["output"] = f"Processed: {state['input']}"
+    return state
+
+
+def create_agent_graph():
+    """Create the LangGraph agent.
+    
+    Returns:
+        Compiled StateGraph
+    """
+    workflow = StateGraph(AgentState)
+    
+    # Add nodes
+    workflow.add_node("process", process_input)
+    
+    # Set entry point and edges
+    workflow.set_entry_point("process")
+    workflow.add_edge("process", END)
+    
+    return workflow.compile()
+
+
+def main():
+    """Main entry point for testing."""
+    graph = create_agent_graph()
+    result = graph.invoke({"input": "Hello, LangGraph!"})
+    print(result)
+
+
+if __name__ == "__main__":
+    main()

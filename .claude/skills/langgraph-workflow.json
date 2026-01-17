@@ -1,0 +1,66 @@
+{
+  "name": "langgraph-workflow",
+  "description": "Skill for building LangGraph state graphs and workflows",
+  "version": "1.0.0",
+  "type": "technical",
+  "prerequisites": [
+    "Understanding of state machines",
+    "LangChain knowledge",
+    "Python type hints expertise"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "action": "Define state schema",
+      "details": "Create TypedDict with all state fields, use Annotated with operators for list fields"
+    },
+    {
+      "step": 2,
+      "action": "Create StateGraph",
+      "details": "Initialize StateGraph with the state schema"
+    },
+    {
+      "step": 3,
+      "action": "Implement node functions",
+      "details": "Create functions that take state and return updated state"
+    },
+    {
+      "step": 4,
+      "action": "Add nodes to graph",
+      "details": "Use workflow.add_node() for each node function"
+    },
+    {
+      "step": 5,
+      "action": "Define edges",
+      "details": "Add regular edges with add_edge() and conditional edges with add_conditional_edges()"
+    },
+    {
+      "step": 6,
+      "action": "Set entry point",
+      "details": "Use workflow.set_entry_point() to define the starting node"
+    },
+    {
+      "step": 7,
+      "action": "Compile graph",
+      "details": "Call workflow.compile() to create executable graph"
+    }
+  ],
+  "patterns": {
+    "state_definition": {
+      "template": "from typing import Annotated, TypedDict\nimport operator\n\nclass MyState(TypedDict):\n    messages: Annotated[list, operator.add]\n    data: str"
+    },
+    "node_function": {
+      "template": "def my_node(state: MyState) -> MyState:\n    # Process state\n    state['data'] = 'updated'\n    return state"
+    },
+    "graph_creation": {
+      "template": "from langgraph.graph import StateGraph, END\n\nworkflow = StateGraph(MyState)\nworkflow.add_node('node1', node1_func)\nworkflow.add_node('node2', node2_func)\nworkflow.set_entry_point('node1')\nworkflow.add_edge('node1', 'node2')\nworkflow.add_edge('node2', END)\ngraph = workflow.compile()"
+    }
+  },
+  "key_concepts": [
+    "State persistence across nodes",
+    "Conditional routing based on state",
+    "Parallel execution of nodes",
+    "Checkpointing for recovery",
+    "Sub-graphs for modularity"
+  ]
+}

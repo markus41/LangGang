@@ -1,0 +1,38 @@
+{
+  "command": "/list-templates",
+  "description": "List all available templates",
+  "usage": "/list-templates [type]",
+  "parameters": {
+    "type": {
+      "description": "Optional: Filter by template type (cookiecutter, copier, maven)",
+      "required": false,
+      "type": "string",
+      "values": ["cookiecutter", "copier", "maven"]
+    }
+  },
+  "examples": [
+    {
+      "command": "/list-templates",
+      "description": "List all templates across all types"
+    },
+    {
+      "command": "/list-templates cookiecutter",
+      "description": "List only Cookiecutter templates"
+    }
+  ],
+  "implementation": {
+    "action": "Call MCP tool list_templates",
+    "response": "Display organized list of available templates by type"
+  },
+  "output_format": {
+    "cookiecutter": [
+      "python-langchain-project"
+    ],
+    "copier": [
+      "langgraph-agent"
+    ],
+    "maven": [
+      "langchain-java-archetype"
+    ]
+  }
+}

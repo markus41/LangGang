@@ -1,0 +1,63 @@
+{
+  "name": "template-creation",
+  "description": "Skill for creating new code templates (Cookiecutter, Copier, Maven)",
+  "version": "1.0.0",
+  "type": "procedural",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Identify template type",
+      "details": "Determine if the template should be Cookiecutter (Python projects), Copier (modern projects with updates), or Maven (Java/JVM projects)"
+    },
+    {
+      "step": 2,
+      "action": "Create directory structure",
+      "details": "Create appropriate directory in templates/cookiecutter/, templates/copier/, or templates/maven/"
+    },
+    {
+      "step": 3,
+      "action": "Add configuration file",
+      "details": "Create cookiecutter.json, copier.yml, or archetype-metadata.xml with required properties"
+    },
+    {
+      "step": 4,
+      "action": "Create template files",
+      "details": "Add template files with placeholders using Jinja2 syntax ({{ variable }}) or Maven placeholders (${variable})"
+    },
+    {
+      "step": 5,
+      "action": "Add documentation",
+      "details": "Create README template explaining the generated project structure and usage"
+    },
+    {
+      "step": 6,
+      "action": "Test template",
+      "details": "Use the MCP server or command-line tools to test template generation"
+    }
+  ],
+  "examples": {
+    "cookiecutter": {
+      "directory": "templates/cookiecutter/my-template/",
+      "config": "cookiecutter.json",
+      "placeholders": "{{ cookiecutter.variable_name }}"
+    },
+    "copier": {
+      "directory": "templates/copier/my-template/",
+      "config": "copier.yml",
+      "placeholders": "{{ variable_name }}"
+    },
+    "maven": {
+      "directory": "templates/maven/my-archetype/",
+      "config": "archetype-metadata.xml",
+      "placeholders": "${variable_name}"
+    }
+  },
+  "best_practices": [
+    "Use descriptive variable names",
+    "Provide sensible defaults",
+    "Add validation where possible",
+    "Include comprehensive README templates",
+    "Test with various input combinations",
+    "Document all template variables"
+  ]
+}

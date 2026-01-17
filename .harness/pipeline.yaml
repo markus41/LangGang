@@ -1,0 +1,109 @@
+pipeline:
+  name: LangGang CI/CD
+  identifier: langgang_cicd
+  projectIdentifier: langgang
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: Build and Test
+        identifier: build_and_test
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Setup Python
+                  identifier: setup_python
+                  spec:
+                    shell: Bash
+                    command: |
+                      python3 --version
+                      pip install --upgrade pip
+                      
+              - step:
+                  type: Run
+                  name: Install Dependencies
+                  identifier: install_dependencies
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install -r requirements.txt
+                      
+              - step:
+                  type: Run
+                  name: Run Linter
+                  identifier: run_linter
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install black ruff mypy
+                      black --check langgang/
+                      ruff check langgang/
+                      
+              - step:
+                  type: Run
+                  name: Run Tests
+                  identifier: run_tests
+                  spec:
+                    shell: Bash
+                    command: |
+                      pytest tests/ -v
+                      
+              - step:
+                  type: Run
+                  name: Verify MCP Server
+                  identifier: verify_mcp
+                  spec:
+                    shell: Bash
+                    command: |
+                      python -m langgang.mcp_server
+                      
+    - stage:
+        name: Deploy
+        identifier: deploy
+        type: Deployment
+        spec:
+          deploymentType: Custom
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Package
+                  identifier: package
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install build
+                      python -m build
+                      
+              - step:
+                  type: Run
+                  name: Deploy to Registry
+                  identifier: deploy_registry
+                  spec:
+                    shell: Bash
+                    command: |
+                      echo "Deploying to package registry..."
+                      # Add actual deployment commands here
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.Github
+        repoName: markus41/LangGang
+        build: <+input>

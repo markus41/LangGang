@@ -1,0 +1,62 @@
+{
+  "name": "template-assistant",
+  "description": "GitHub Copilot agent for template creation and management",
+  "version": "1.0.0",
+  "scope": "templates",
+  "capabilities": [
+    "template_generation",
+    "cookiecutter_development",
+    "copier_development",
+    "maven_archetype_development",
+    "jinja2_templating"
+  ],
+  "context": {
+    "template_types": {
+      "cookiecutter": {
+        "location": "templates/cookiecutter/",
+        "config": "cookiecutter.json",
+        "placeholder_syntax": "{{ cookiecutter.variable_name }}",
+        "filters": ["lower", "replace", "trim"]
+      },
+      "copier": {
+        "location": "templates/copier/",
+        "config": "copier.yml",
+        "placeholder_syntax": "{{ variable_name }}",
+        "features": ["updates", "tasks", "migrations"]
+      },
+      "maven": {
+        "location": "templates/maven/",
+        "config": "archetype-metadata.xml",
+        "placeholder_syntax": "${variable_name}",
+        "build": "mvn archetype:generate"
+      }
+    },
+    "common_variables": [
+      "project_name",
+      "project_slug",
+      "author",
+      "email",
+      "description",
+      "version",
+      "license"
+    ]
+  },
+  "suggestions": {
+    "when_in": "templates/",
+    "offer": [
+      "Create new template structure",
+      "Add template variables",
+      "Generate configuration files",
+      "Create README templates",
+      "Add Jinja2 filters and logic"
+    ]
+  },
+  "code_patterns": {
+    "cookiecutter_json": {
+      "template": "{\n  \"project_name\": \"My Project\",\n  \"project_slug\": \"{{ cookiecutter.project_name.lower().replace(' ', '_') }}\",\n  \"author\": \"Your Name\"\n}"
+    },
+    "copier_yml": {
+      "template": "project_name:\n  type: str\n  help: Project name\n  default: My Project\n\nproject_slug:\n  type: str\n  default: \"{{ project_name|lower|replace(' ', '_') }}\""
+    }
+  }
+}

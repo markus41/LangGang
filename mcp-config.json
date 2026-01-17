@@ -1,0 +1,67 @@
+{
+  "mcpServers": {
+    "langgang-templates": {
+      "command": "python",
+      "args": ["-m", "langgang.mcp_server"],
+      "env": {},
+      "description": "LangGang template generation MCP server"
+    },
+    "langchain-docs": {
+      "command": "python",
+      "args": ["-m", "langgang.docs_mcp_server"],
+      "env": {},
+      "description": "LangChain documentation MCP server for development assistance"
+    },
+    "langgraph-docs": {
+      "command": "python",
+      "args": ["-m", "langgang.docs_mcp_server"],
+      "env": {},
+      "description": "LangGraph documentation MCP server for development assistance"
+    }
+  },
+  "server": {
+    "name": "langgang-mcp-server",
+    "version": "0.1.0",
+    "description": "MCP server for AI-powered code templating with documentation access"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "generate_from_cookiecutter",
+        "description": "Generate code from a Cookiecutter template"
+      },
+      {
+        "name": "generate_from_copier",
+        "description": "Generate code from a Copier template"
+      },
+      {
+        "name": "generate_from_maven_archetype",
+        "description": "Generate code from a Maven archetype"
+      },
+      {
+        "name": "list_templates",
+        "description": "List available templates"
+      },
+      {
+        "name": "search_langchain_docs",
+        "description": "Search LangChain documentation"
+      },
+      {
+        "name": "search_langgraph_docs",
+        "description": "Search LangGraph documentation"
+      },
+      {
+        "name": "get_langchain_examples",
+        "description": "Get LangChain code examples by category"
+      },
+      {
+        "name": "get_langgraph_examples",
+        "description": "Get LangGraph code examples by category"
+      },
+      {
+        "name": "list_available_docs",
+        "description": "List all available documentation sources"
+      }
+    ]
+  }
+}

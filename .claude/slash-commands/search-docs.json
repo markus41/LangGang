@@ -1,0 +1,32 @@
+{
+  "command": "/search-docs",
+  "description": "Search LangChain or LangGraph documentation",
+  "usage": "/search-docs <framework> <query>",
+  "parameters": {
+    "framework": {
+      "description": "Framework to search: langchain or langgraph",
+      "required": true,
+      "type": "string",
+      "values": ["langchain", "langgraph"]
+    },
+    "query": {
+      "description": "Search query",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "examples": [
+    {
+      "command": "/search-docs langchain agents",
+      "description": "Search LangChain documentation for information about agents"
+    },
+    {
+      "command": "/search-docs langgraph state management",
+      "description": "Search LangGraph documentation for state management"
+    }
+  ],
+  "implementation": {
+    "action": "Call MCP tool search_langchain_docs or search_langgraph_docs",
+    "response": "Display relevant documentation topics and links"
+  }
+}

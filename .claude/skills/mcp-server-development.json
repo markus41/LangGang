@@ -1,0 +1,69 @@
+{
+  "name": "mcp-server-development",
+  "description": "Skill for developing and extending MCP servers",
+  "version": "1.0.0",
+  "type": "technical",
+  "prerequisites": [
+    "Understanding of MCP protocol",
+    "Python development skills",
+    "API design knowledge"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "action": "Define tool purpose and schema",
+      "details": "Determine what the MCP tool should do and what parameters it needs"
+    },
+    {
+      "step": 2,
+      "action": "Implement tool method",
+      "details": "Add method to MCP server class with proper signature and return type"
+    },
+    {
+      "step": 3,
+      "action": "Add to capabilities",
+      "details": "Update mcp-config.json to include the new tool in capabilities list"
+    },
+    {
+      "step": 4,
+      "action": "Add error handling",
+      "details": "Implement try-except blocks and return proper error responses"
+    },
+    {
+      "step": 5,
+      "action": "Add logging",
+      "details": "Use logger to track tool usage and errors"
+    },
+    {
+      "step": 6,
+      "action": "Document the tool",
+      "details": "Add docstring with parameters, return type, and example usage"
+    },
+    {
+      "step": 7,
+      "action": "Test with MCP client",
+      "details": "Test the tool with an MCP client or inspector"
+    }
+  ],
+  "mcp_tool_structure": {
+    "method_signature": "def tool_name(self, param1: str, param2: int) -> Dict[str, Any]:",
+    "return_format": {
+      "success": {
+        "status": "success",
+        "data": "result"
+      },
+      "error": {
+        "error": "error message"
+      }
+    }
+  },
+  "server_locations": {
+    "template_server": "langgang/mcp_server.py",
+    "docs_server": "langgang/docs_mcp_server.py",
+    "config": "mcp-config.json"
+  },
+  "testing": {
+    "local_testing": "python -m langgang.mcp_server",
+    "with_client": "Use MCP inspector or Claude Code"
+  }
+}

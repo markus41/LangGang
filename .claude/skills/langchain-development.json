@@ -1,0 +1,58 @@
+{
+  "name": "langchain-development",
+  "description": "Skill for developing LangChain tools, chains, and agents",
+  "version": "1.0.0",
+  "type": "technical",
+  "prerequisites": [
+    "Understanding of LangChain concepts",
+    "Python programming knowledge",
+    "Familiarity with Pydantic models"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "action": "Define the tool or chain purpose",
+      "details": "Clearly identify what the LangChain component should do"
+    },
+    {
+      "step": 2,
+      "action": "Create Pydantic input schema",
+      "details": "Define input parameters using Pydantic BaseModel with proper types and descriptions"
+    },
+    {
+      "step": 3,
+      "action": "Implement the tool class",
+      "details": "Inherit from BaseTool and implement name, description, args_schema, and _run method"
+    },
+    {
+      "step": 4,
+      "action": "Add error handling",
+      "details": "Implement try-except blocks and return meaningful error messages"
+    },
+    {
+      "step": 5,
+      "action": "Write tests",
+      "details": "Create unit tests covering normal and edge cases"
+    },
+    {
+      "step": 6,
+      "action": "Document usage",
+      "details": "Add docstrings and example usage"
+    }
+  ],
+  "patterns": {
+    "tool_definition": {
+      "template": "class MyTool(BaseTool):\n    name = 'tool_name'\n    description = 'What the tool does'\n    args_schema: type[BaseModel] = MyInputSchema\n    \n    def _run(self, param1: str) -> str:\n        # Implementation\n        return result"
+    },
+    "chain_creation": {
+      "template": "from langchain_core.prompts import ChatPromptTemplate\n\nprompt = ChatPromptTemplate.from_template('template')\nchain = prompt | llm | output_parser"
+    }
+  },
+  "documentation_access": "Use the docs_mcp_server to search LangChain documentation during development",
+  "common_imports": [
+    "from langchain_core.tools import BaseTool",
+    "from langchain_core.prompts import ChatPromptTemplate",
+    "from pydantic import BaseModel, Field",
+    "from typing import Any, Dict, Optional"
+  ]
+}

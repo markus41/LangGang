@@ -1,0 +1,40 @@
+{
+  "command": "/get-examples",
+  "description": "Get code examples from LangChain or LangGraph",
+  "usage": "/get-examples <framework> [category]",
+  "parameters": {
+    "framework": {
+      "description": "Framework: langchain or langgraph",
+      "required": true,
+      "type": "string",
+      "values": ["langchain", "langgraph"]
+    },
+    "category": {
+      "description": "Example category (chains, agents, tools, graphs, nodes, etc.)",
+      "required": false,
+      "type": "string"
+    }
+  },
+  "examples": [
+    {
+      "command": "/get-examples langchain agents",
+      "description": "Get LangChain agent examples"
+    },
+    {
+      "command": "/get-examples langgraph graphs",
+      "description": "Get LangGraph state graph examples"
+    },
+    {
+      "command": "/get-examples langchain",
+      "description": "Get all LangChain examples"
+    }
+  ],
+  "implementation": {
+    "action": "Call MCP tool get_langchain_examples or get_langgraph_examples",
+    "response": "Display list of available examples with descriptions"
+  },
+  "categories": {
+    "langchain": ["chains", "agents", "tools", "memory"],
+    "langgraph": ["graphs", "nodes", "state", "persistence"]
+  }
+}

@@ -1,0 +1,37 @@
+_templates_suffix: .jinja
+_subdirectory: template
+
+project_name:
+  type: str
+  help: What is your project name?
+  default: My LangGraph Agent
+
+project_slug:
+  type: str
+  help: Project slug (for directories)
+  default: "{{ project_name|lower|replace(' ', '_')|replace('-', '_') }}"
+
+author_name:
+  type: str
+  help: Author name
+  default: LangGang User
+
+description:
+  type: str
+  help: Brief project description
+  default: A LangGraph-based agent application
+
+use_langchain:
+  type: bool
+  help: Include LangChain integration?
+  default: yes
+
+python_version:
+  type: str
+  help: Python version
+  default: "3.9"
+  choices:
+    - "3.9"
+    - "3.10"
+    - "3.11"
+    - "3.12"
