@@ -1,0 +1,45 @@
+# GitHub CODEOWNERS file
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @markus41
+
+# Python package code
+/langgang/ @markus41
+/langgang/mcp_server.py @markus41
+/langgang/docs_mcp_server.py @markus41
+/langgang/langchain_integration.py @markus41
+/langgang/langgraph_integration.py @markus41
+
+# Templates
+/templates/ @markus41
+/templates/cookiecutter/ @markus41
+/templates/copier/ @markus41
+/templates/maven/ @markus41
+
+# Tests require approval
+/tests/ @markus41
+
+# CI/CD configurations
+/.github/ @markus41
+/.github/workflows/ @markus41
+/.harness/ @markus41
+
+# IDE configurations
+/.claude/ @markus41
+/.copilot/ @markus41
+
+# Documentation
+/README.md @markus41
+/docs/ @markus41
+*.md @markus41
+
+# Configuration files
+/pyproject.toml @markus41
+/requirements.txt @markus41
+/mcp-config.json @markus41
+/.gitignore @markus41
+
+# Security-sensitive files (require extra review)
+/.github/workflows/security.yml @markus41
+/.harness/security-pipeline.yaml @markus41

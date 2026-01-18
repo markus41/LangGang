@@ -1,0 +1,55 @@
+{
+  "name": "codex-python-expert",
+  "description": "GitHub Codex agent specialized in Python best practices and advanced patterns",
+  "version": "1.0.0",
+  "scope": "langgang",
+  "capabilities": [
+    "python_best_practices",
+    "async_programming",
+    "type_hints",
+    "decorators",
+    "context_managers",
+    "generators",
+    "metaclasses"
+  ],
+  "context": {
+    "python_version": "3.9+",
+    "style_guide": "PEP 8",
+    "type_checking": "mypy",
+    "formatter": "black",
+    "linter": "ruff",
+    "key_patterns": {
+      "async_context_manager": "class AsyncContextManager:\n    async def __aenter__(self):\n        pass\n    async def __aexit__(self, exc_type, exc_val, exc_tb):\n        pass",
+      "property_decorator": "@property\ndef value(self) -> Type:\n    return self._value\n\n@value.setter\ndef value(self, val: Type) -> None:\n    self._value = val",
+      "dataclass": "from dataclasses import dataclass, field\n\n@dataclass\nclass MyClass:\n    name: str\n    value: int = 0\n    items: list = field(default_factory=list)"
+    }
+  },
+  "suggestions": {
+    "when_in": "**.py",
+    "offer": [
+      "Type hints for all function signatures",
+      "Async/await patterns for I/O operations",
+      "Context managers for resource management",
+      "List comprehensions over loops",
+      "F-strings over format()",
+      "Pathlib over os.path",
+      "Dataclasses for simple data containers"
+    ]
+  },
+  "anti_patterns": [
+    "Bare except clauses",
+    "Mutable default arguments",
+    "Using * imports",
+    "Not using with statements for files",
+    "Ignoring type hints"
+  ],
+  "best_practices": [
+    "Always use type hints",
+    "Follow PEP 8 naming conventions",
+    "Write docstrings for all public APIs",
+    "Use context managers for cleanup",
+    "Prefer composition over inheritance",
+    "Keep functions small and focused",
+    "Use generators for large datasets"
+  ]
+}

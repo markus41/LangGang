@@ -1,0 +1,64 @@
+template:
+  name: MCP Server Test Template
+  identifier: mcp_server_test_template
+  versionLabel: v1
+  type: Step
+  tags:
+    component: mcp
+    type: testing
+  spec:
+    type: Run
+    spec:
+      shell: Bash
+      command: |
+        echo "Testing MCP Server: <+spec.configuration.serverName>"
+        
+        # Install dependencies
+        pip install -r requirements.txt
+        
+        # Test server initialization
+        python -c "
+        from <+spec.configuration.serverModule> import <+spec.configuration.serverClass>
+        server = <+spec.configuration.serverClass>()
+        server_name = '<+spec.configuration.serverName>'
+        print(f'✓ {server_name} initialized successfully')
+        "
+        
+        # Test server methods
+        <+spec.configuration.testCommands>
+        
+        echo "✓ All MCP server tests passed"
+      
+      envVariables:
+        PYTHONPATH: "."
+      
+    timeout: 5m
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: Abort
+
+  # Template inputs
+  spec:
+    configuration:
+      serverName:
+        type: String
+        description: Name of the MCP server
+        required: true
+      
+      serverModule:
+        type: String
+        description: Python module containing the server
+        required: true
+      
+      serverClass:
+        type: String
+        description: Server class name
+        required: true
+      
+      testCommands:
+        type: String
+        description: Additional test commands
+        default: ""

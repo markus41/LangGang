@@ -1,0 +1,57 @@
+{
+  "command": "/new-langchain-tool",
+  "description": "Create a new LangChain tool with proper structure",
+  "usage": "/new-langchain-tool <tool-name> <description>",
+  "parameters": {
+    "tool-name": {
+      "description": "Name of the tool (snake_case)",
+      "required": true,
+      "type": "string"
+    },
+    "description": {
+      "description": "What the tool does",
+      "required": true,
+      "type": "string"
+    },
+    "parameters": {
+      "description": "Tool parameters as JSON schema",
+      "required": false,
+      "type": "object"
+    }
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "action": "Create Pydantic input schema",
+      "details": "Define input parameters with types and descriptions"
+    },
+    {
+      "step": 2,
+      "action": "Create tool class",
+      "details": "Inherit from BaseTool with proper methods"
+    },
+    {
+      "step": 3,
+      "action": "Implement _run method",
+      "details": "Add business logic with error handling"
+    },
+    {
+      "step": 4,
+      "action": "Add to tool registry",
+      "details": "Export tool in get_langgang_tools()"
+    },
+    {
+      "step": 5,
+      "action": "Write tests",
+      "details": "Create unit tests for the tool"
+    }
+  ],
+  "examples": [
+    {
+      "command": "/new-langchain-tool validate_template 'Validates template syntax'",
+      "description": "Create a tool for template validation"
+    }
+  ],
+  "template": "class {ToolName}Tool(BaseTool):\n    name = '{tool_name}'\n    description = '{description}'\n    args_schema: type[BaseModel] = {ToolName}Input\n    \n    def _run(self, **kwargs) -> str:\n        # Implementation\n        pass",
+  "location": "langgang/langchain_integration.py"
+}

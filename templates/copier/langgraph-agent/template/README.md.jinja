@@ -1,0 +1,32 @@
+# {{ project_name }}
+
+{{ description }}
+
+## LangGraph Agent
+
+This project uses LangGraph to build a stateful, multi-actor application.
+
+## Setup
+
+```bash
+python{{ python_version }} -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Usage
+
+```python
+from {{ project_slug }}.agent import create_agent_graph
+
+# Create the agent graph
+graph = create_agent_graph()
+
+# Run the agent
+result = graph.invoke({"input": "Your query here"})
+print(result)
+```
+
+## Author
+
+{{ author_name }}

@@ -1,0 +1,77 @@
+{
+  "name": "langgang-mcp-config",
+  "description": "MCP server configurations for LangGang",
+  "version": "1.0.0",
+  "servers": [
+    {
+      "id": "langgang-templates",
+      "name": "LangGang Template Generator",
+      "command": "python",
+      "args": ["-m", "langgang.mcp_server"],
+      "env": {},
+      "description": "Generate code from Cookiecutter, Copier, and Maven templates",
+      "tools": [
+        "generate_from_cookiecutter",
+        "generate_from_copier",
+        "generate_from_maven_archetype",
+        "list_templates"
+      ]
+    },
+    {
+      "id": "langchain-docs",
+      "name": "LangChain Documentation",
+      "command": "python",
+      "args": ["-m", "langgang.docs_mcp_server"],
+      "env": {},
+      "description": "Access LangChain documentation and examples",
+      "tools": [
+        "search_langchain_docs",
+        "get_langchain_examples",
+        "list_available_docs"
+      ]
+    },
+    {
+      "id": "langgraph-docs",
+      "name": "LangGraph Documentation",
+      "command": "python",
+      "args": ["-m", "langgang.docs_mcp_server"],
+      "env": {},
+      "description": "Access LangGraph documentation and examples",
+      "tools": [
+        "search_langgraph_docs",
+        "get_langgraph_examples",
+        "list_available_docs"
+      ]
+    }
+  ],
+  "usage": {
+    "starting_servers": "Claude Code will automatically start these MCP servers when working in this repository",
+    "available_tools": "Use the tools to generate templates, search documentation, and get code examples",
+    "examples": [
+      {
+        "description": "List all available templates",
+        "tool": "list_templates",
+        "params": {}
+      },
+      {
+        "description": "Generate a Python LangChain project",
+        "tool": "generate_from_cookiecutter",
+        "params": {
+          "template_name": "python-langchain-project",
+          "output_dir": "./output",
+          "context": {
+            "project_name": "My AI App",
+            "use_langchain": "y"
+          }
+        }
+      },
+      {
+        "description": "Search LangChain documentation",
+        "tool": "search_langchain_docs",
+        "params": {
+          "query": "agents"
+        }
+      }
+    ]
+  }
+}

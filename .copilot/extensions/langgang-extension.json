@@ -1,0 +1,104 @@
+{
+  "name": "langgang-extension",
+  "description": "GitHub Copilot extension for LangGang template generation",
+  "version": "1.0.0",
+  "type": "workspace",
+  "activation_patterns": [
+    "**/templates/**",
+    "**/langgang/**",
+    "**/*.json",
+    "**/*.yml",
+    "**/*.yaml"
+  ],
+  "commands": [
+    {
+      "id": "langgang.generateTemplate",
+      "title": "Generate from Template",
+      "description": "Generate code from a Cookiecutter, Copier, or Maven template"
+    },
+    {
+      "id": "langgang.listTemplates",
+      "title": "List Templates",
+      "description": "Show all available templates"
+    },
+    {
+      "id": "langgang.createTemplate",
+      "title": "Create New Template",
+      "description": "Create a new template structure"
+    },
+    {
+      "id": "langgang.searchDocs",
+      "title": "Search Documentation",
+      "description": "Search LangChain or LangGraph documentation"
+    }
+  ],
+  "code_actions": [
+    {
+      "when": "file_type == 'python' && in_directory == 'langgang'",
+      "actions": [
+        "Suggest LangChain tool patterns",
+        "Suggest LangGraph workflow patterns",
+        "Suggest MCP tool implementations"
+      ]
+    },
+    {
+      "when": "file_name == 'cookiecutter.json'",
+      "actions": [
+        "Suggest template variables",
+        "Validate JSON structure",
+        "Suggest Jinja2 filters"
+      ]
+    },
+    {
+      "when": "file_name == 'copier.yml'",
+      "actions": [
+        "Suggest question types",
+        "Validate YAML structure",
+        "Suggest default values"
+      ]
+    }
+  ],
+  "inline_suggestions": {
+    "langchain_tools": {
+      "trigger": "class.*Tool\\(BaseTool\\)",
+      "suggest": [
+        "name property",
+        "description property",
+        "args_schema property",
+        "_run method implementation"
+      ]
+    },
+    "langgraph_state": {
+      "trigger": "class.*\\(TypedDict\\)",
+      "suggest": [
+        "Annotated fields with operator.add for lists",
+        "Type hints for all fields"
+      ]
+    },
+    "mcp_tools": {
+      "trigger": "def.*\\(self,.*\\) -> Dict",
+      "suggest": [
+        "Docstring with Args and Returns",
+        "try-except block",
+        "Return {'status': 'success'} or {'error': 'msg'}"
+      ]
+    }
+  },
+  "snippets": [
+    {
+      "prefix": "lc-tool",
+      "description": "LangChain tool template",
+      "body": "class ${1:ToolName}Tool(BaseTool):\n    name = '${2:tool_name}'\n    description = '${3:Tool description}'\n    args_schema: type[BaseModel] = ${1:ToolName}Input\n    \n    def _run(self, ${4:params}) -> str:\n        ${5:# Implementation}\n        return result"
+    },
+    {
+      "prefix": "lg-state",
+      "description": "LangGraph state definition",
+      "body": "class ${1:MyState}(TypedDict):\n    messages: Annotated[list, operator.add]\n    ${2:field}: ${3:str}"
+    },
+    {
+      "prefix": "mcp-tool",
+      "description": "MCP tool method",
+      "body": "def ${1:tool_name}(self, ${2:param}: ${3:str}) -> Dict[str, Any]:\n    \"\"\"${4:Tool description}.\n    \n    Args:\n        ${2:param}: ${5:Parameter description}\n        \n    Returns:\n        Dict with status or error\n    \"\"\"\n    try:\n        ${6:# Implementation}\n        return {'status': 'success', 'data': result}\n    except Exception as e:\n        logger.error(f'Error: {e}')\n        return {'error': str(e)}"
+    }
+  ]
+}

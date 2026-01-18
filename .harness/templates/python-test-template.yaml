@@ -1,0 +1,85 @@
+template:
+  name: Python Test Template
+  identifier: python_test_template
+  versionLabel: v1
+  type: Step
+  tags:
+    language: python
+    type: testing
+  spec:
+    type: Run
+    spec:
+      shell: Bash
+      command: |
+        echo "Running tests for <+spec.configuration.pythonVersion>"
+        
+        # Setup Python environment
+        python<+spec.configuration.pythonVersion> -m venv venv
+        source venv/bin/activate
+        
+        # Install dependencies
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-asyncio
+        
+        # Run tests
+        pytest <+spec.configuration.testPath> \
+          -v \
+          --cov=<+spec.configuration.coveragePath> \
+          --cov-report=xml \
+          --cov-report=html \
+          --cov-report=term
+        
+        # Check coverage threshold
+        coverage report --fail-under=<+spec.configuration.coverageThreshold>
+      
+      envVariables:
+        PYTHONPATH: <+spec.configuration.pythonPath>
+      
+    timeout: 10m
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: Retry
+            spec:
+              retryCount: 2
+              retryIntervals:
+                - 30s
+              onRetryFailure:
+                action:
+                  type: Abort
+
+  # Template inputs
+  spec:
+    configuration:
+      pythonVersion:
+        type: String
+        description: Python version to use
+        default: "3.11"
+        allowedValues:
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+      
+      testPath:
+        type: String
+        description: Path to tests
+        default: "tests/"
+      
+      coveragePath:
+        type: String
+        description: Path for coverage analysis
+        default: "langgang"
+      
+      coverageThreshold:
+        type: Number
+        description: Minimum coverage percentage
+        default: 80
+      
+      pythonPath:
+        type: String
+        description: Python path for imports
+        default: "."

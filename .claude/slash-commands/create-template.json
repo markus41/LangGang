@@ -1,0 +1,64 @@
+{
+  "command": "/create-template",
+  "description": "Create a new template using guided workflow",
+  "usage": "/create-template <type> <name>",
+  "parameters": {
+    "type": {
+      "description": "Template type to create: cookiecutter, copier, or maven",
+      "required": true,
+      "type": "string",
+      "values": ["cookiecutter", "copier", "maven"]
+    },
+    "name": {
+      "description": "Name for the new template",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "prompt": "What is the purpose of this template?",
+      "output": "Template description"
+    },
+    {
+      "step": 2,
+      "prompt": "What variables should users provide?",
+      "output": "List of template variables with descriptions"
+    },
+    {
+      "step": 3,
+      "action": "Create template directory structure",
+      "location": "templates/{type}/{name}/"
+    },
+    {
+      "step": 4,
+      "action": "Generate configuration file",
+      "files": ["cookiecutter.json", "copier.yml", "archetype-metadata.xml"]
+    },
+    {
+      "step": 5,
+      "action": "Create template files",
+      "details": "Add boilerplate files with placeholders"
+    },
+    {
+      "step": 6,
+      "action": "Generate documentation",
+      "files": ["README.md template"]
+    }
+  ],
+  "examples": [
+    {
+      "command": "/create-template cookiecutter django-api",
+      "description": "Create a new Cookiecutter template for Django REST APIs"
+    },
+    {
+      "command": "/create-template maven spring-microservice",
+      "description": "Create a Maven archetype for Spring Boot microservices"
+    }
+  ],
+  "implementation": {
+    "action": "Use template-generator agent to guide user through template creation",
+    "response": "Create all necessary files and provide usage instructions"
+  }
+}

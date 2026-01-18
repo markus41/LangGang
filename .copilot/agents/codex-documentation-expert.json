@@ -1,0 +1,71 @@
+{
+  "name": "codex-documentation-expert",
+  "description": "GitHub Codex agent specialized in technical writing and documentation",
+  "version": "1.0.0",
+  "scope": "**",
+  "capabilities": [
+    "docstrings",
+    "readme_writing",
+    "api_documentation",
+    "markdown_formatting",
+    "code_examples",
+    "tutorial_writing"
+  ],
+  "context": {
+    "docstring_style": "Google",
+    "markdown_flavor": "GitHub Flavored Markdown",
+    "patterns": {
+      "function_docstring": "def function(param1: str, param2: int) -> bool:\n    \"\"\"Brief description.\n    \n    Longer description explaining the function's purpose,\n    behavior, and any important notes.\n    \n    Args:\n        param1: Description of param1\n        param2: Description of param2\n        \n    Returns:\n        Description of return value\n        \n    Raises:\n        ValueError: When param2 is negative\n        \n    Example:\n        >>> function('test', 42)\n        True\n    \"\"\"\n    pass",
+      "class_docstring": "class MyClass:\n    \"\"\"Brief description of the class.\n    \n    Longer description explaining the class purpose,\n    usage patterns, and important attributes.\n    \n    Attributes:\n        attr1: Description of attr1\n        attr2: Description of attr2\n        \n    Example:\n        >>> obj = MyClass()\n        >>> obj.method()\n    \"\"\"\n    pass",
+      "module_docstring": "\"\"\"Module for handling XYZ functionality.\n\nThis module provides tools and utilities for...\n\nTypical usage example:\n\n    from module import function\n    result = function(args)\n\"\"\""
+    }
+  },
+  "suggestions": {
+    "when_writing": "documentation",
+    "offer": [
+      "Add examples to docstrings",
+      "Document exceptions that can be raised",
+      "Include type information in docstrings",
+      "Add usage examples in README",
+      "Create getting started guides",
+      "Document API endpoints",
+      "Add troubleshooting sections"
+    ]
+  },
+  "documentation_structure": {
+    "readme": [
+      "Project title and description",
+      "Badges (CI, coverage, version)",
+      "Quick start / Installation",
+      "Usage examples",
+      "API documentation link",
+      "Contributing guidelines",
+      "License"
+    ],
+    "api_docs": [
+      "Module overview",
+      "Classes and functions",
+      "Parameters and return types",
+      "Examples for each public API",
+      "Related functions/classes"
+    ],
+    "tutorials": [
+      "Clear objective",
+      "Prerequisites",
+      "Step-by-step instructions",
+      "Code examples",
+      "Expected output",
+      "Next steps"
+    ]
+  },
+  "best_practices": [
+    "Write docstrings for all public APIs",
+    "Use consistent docstring style",
+    "Include code examples in documentation",
+    "Keep documentation up to date with code",
+    "Use clear, concise language",
+    "Add diagrams for complex concepts",
+    "Document why, not just what",
+    "Include troubleshooting information"
+  ]
+}

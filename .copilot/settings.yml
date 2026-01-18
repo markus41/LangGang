@@ -1,0 +1,238 @@
+# GitHub Copilot Workspace Settings for LangGang
+
+# This file configures GitHub Copilot behavior for the LangGang workspace
+# See: https://docs.github.com/en/copilot
+
+# File patterns for Copilot to focus on
+include:
+  - "langgang/**/*.py"
+  - "tests/**/*.py"
+  - "templates/**/*"
+  - ".github/**/*.yml"
+  - ".harness/**/*.yaml"
+  - "*.md"
+
+# File patterns for Copilot to ignore
+exclude:
+  - "**/__pycache__/**"
+  - "**/node_modules/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/*.pyc"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/.pytest_cache/**"
+  - "**/*.egg-info/**"
+
+# Language-specific settings
+languages:
+  python:
+    # Prefer type hints
+    type_hints: true
+    # Use modern Python features (3.9+)
+    python_version: "3.9+"
+    # Prefer async/await over callbacks
+    async_preferred: true
+    # Use f-strings over .format()
+    string_formatting: "f-strings"
+    # Prefer pathlib over os.path
+    path_library: "pathlib"
+
+  yaml:
+    # Validate YAML syntax
+    validate: true
+    # Prefer explicit over implicit
+    style: "explicit"
+
+  markdown:
+    # Use GitHub Flavored Markdown
+    flavor: "gfm"
+    # Check links
+    check_links: true
+
+# Framework-specific guidance
+frameworks:
+  langchain:
+    # Use latest patterns
+    version: "0.1.0+"
+    # Prefer streaming for long operations
+    streaming: true
+    # Use structured output
+    structured_output: true
+
+  langgraph:
+    # Use TypedDict for state
+    state_type: "TypedDict"
+    # Use Annotated with operators
+    annotations: true
+
+  pytest:
+    # Use fixtures over setup/teardown
+    fixture_style: true
+    # Prefer parametrize over multiple tests
+    parametrize_when_possible: true
+
+# Code style preferences
+style:
+  # Maximum line length
+  max_line_length: 100
+  
+  # Naming conventions
+  naming:
+    classes: "PascalCase"
+    functions: "snake_case"
+    constants: "UPPER_SNAKE_CASE"
+    private: "_prefix"
+  
+  # Import organization
+  imports:
+    order:
+      - "standard_library"
+      - "third_party"
+      - "local"
+    grouping: true
+    
+  # Docstring style
+  docstrings:
+    style: "google"
+    required_for:
+      - "public_functions"
+      - "public_classes"
+      - "modules"
+
+# Common patterns to suggest
+patterns:
+  # Prefer context managers
+  - pattern: "resource_management"
+    suggestion: "Use 'with' statements for file/resource handling"
+    
+  # Prefer list comprehensions
+  - pattern: "list_building"
+    suggestion: "Use list comprehensions over for loops when building lists"
+    
+  # Prefer early returns
+  - pattern: "error_checking"
+    suggestion: "Use early returns to reduce nesting"
+    
+  # Prefer pathlib
+  - pattern: "file_paths"
+    suggestion: "Use pathlib.Path over os.path"
+
+# Testing guidelines
+testing:
+  # Test file naming
+  test_file_pattern: "test_*.py"
+  
+  # Test function naming
+  test_function_pattern: "test_<function>_<scenario>_<expected>"
+  
+  # Preferred assertions
+  assertions:
+    - "Use specific assertions (assertEqual, assertIn) over assertTrue"
+    - "One logical assertion per test when possible"
+    - "Use pytest assertions over unittest assertions"
+  
+  # Coverage targets
+  coverage:
+    minimum: 80
+    critical_paths: 95
+
+# Documentation expectations
+documentation:
+  # README sections
+  readme_sections:
+    - "Title and description"
+    - "Installation"
+    - "Quick start"
+    - "API documentation"
+    - "Examples"
+    - "Contributing"
+    - "License"
+  
+  # API documentation requirements
+  api_docs:
+    - "Function/class purpose"
+    - "Parameters with types"
+    - "Return values"
+    - "Exceptions raised"
+    - "Usage examples"
+  
+  # Comments
+  comments:
+    when_to_comment:
+      - "Complex algorithms"
+      - "Non-obvious business logic"
+      - "Workarounds for bugs"
+      - "Performance optimizations"
+    when_not_to_comment:
+      - "Obvious code"
+      - "Self-explanatory names"
+
+# Performance considerations
+performance:
+  suggestions:
+    - "Use generators for large datasets"
+    - "Cache expensive operations"
+    - "Use async for I/O-bound operations"
+    - "Prefer built-in functions over custom implementations"
+    - "Use appropriate data structures (dict for lookup, set for membership)"
+
+# Security best practices
+security:
+  checks:
+    - "Validate user input"
+    - "Use parameterized queries"
+    - "Don't log sensitive information"
+    - "Use secrets management for credentials"
+    - "Sanitize file paths"
+    - "Implement rate limiting for APIs"
+
+# AI/ML specific guidance
+ai_ml:
+  langchain:
+    - "Always handle LLM API errors"
+    - "Implement retry logic with exponential backoff"
+    - "Use streaming for long responses"
+    - "Cache repeated queries"
+    - "Monitor token usage"
+    
+  langgraph:
+    - "Use TypedDict for state definitions"
+    - "Implement proper node error handling"
+    - "Add checkpointing for long workflows"
+    - "Use conditional edges for branching logic"
+
+# Template development
+templates:
+  cookiecutter:
+    - "Use descriptive variable names"
+    - "Provide sensible defaults"
+    - "Add validation in hooks"
+    - "Include comprehensive README templates"
+    
+  copier:
+    - "Use YAML for configuration"
+    - "Support template updates"
+    - "Add migrations for breaking changes"
+    - "Document all template variables"
+    
+  maven:
+    - "Follow Maven conventions"
+    - "Use properties for versions"
+    - "Include test examples"
+    - "Document required properties"
+
+# CI/CD guidance
+ci_cd:
+  github_actions:
+    - "Use caching for dependencies"
+    - "Run linting before tests"
+    - "Parallelize independent jobs"
+    - "Use matrix builds for multiple versions"
+    - "Add security scanning"
+    
+  harness:
+    - "Implement proper failure strategies"
+    - "Use cloud platform for builds"
+    - "Add deployment approvals for production"
+    - "Implement rollback mechanisms"

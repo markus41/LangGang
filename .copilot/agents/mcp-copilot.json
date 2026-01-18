@@ -1,0 +1,46 @@
+{
+  "name": "mcp-copilot",
+  "description": "GitHub Copilot agent for MCP server development",
+  "version": "1.0.0",
+  "scope": "langgang",
+  "capabilities": [
+    "mcp_server_development",
+    "tool_endpoint_creation",
+    "protocol_implementation",
+    "api_design"
+  ],
+  "context": {
+    "mcp_servers": {
+      "template_server": "langgang/mcp_server.py",
+      "docs_server": "langgang/docs_mcp_server.py"
+    },
+    "config": "mcp-config.json",
+    "tool_signature": "def tool_name(self, param: str) -> Dict[str, Any]:",
+    "response_format": {
+      "success": "{'status': 'success', 'data': result}",
+      "error": "{'error': 'message'}"
+    }
+  },
+  "suggestions": {
+    "when_in": "langgang/*mcp*.py",
+    "offer": [
+      "Add new MCP tool",
+      "Update tool schemas",
+      "Add error handling",
+      "Implement logging",
+      "Update capabilities in config"
+    ]
+  },
+  "code_patterns": {
+    "tool_method": "def my_tool(self, param: str, optional: Optional[int] = None) -> Dict[str, Any]:\n    \"\"\"Tool description.\n    \n    Args:\n        param: Description\n        optional: Optional param\n        \n    Returns:\n        Dict with status or error\n    \"\"\"\n    try:\n        result = process(param)\n        return {'status': 'success', 'data': result}\n    except Exception as e:\n        logger.error(f'Error: {e}')\n        return {'error': str(e)}"
+  },
+  "best_practices": [
+    "Follow MCP protocol specification",
+    "Return consistent response formats",
+    "Add comprehensive error handling",
+    "Log all tool invocations",
+    "Update mcp-config.json when adding tools",
+    "Document parameters and return values",
+    "Test with MCP clients"
+  ]
+}

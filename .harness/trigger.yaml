@@ -1,0 +1,25 @@
+trigger:
+  name: LangGang PR Trigger
+  identifier: langgang_pr_trigger
+  enabled: true
+  orgIdentifier: default
+  projectIdentifier: langgang
+  pipelineIdentifier: langgang_cicd
+  source:
+    type: Webhook
+    spec:
+      type: Github
+      spec:
+        type: PullRequest
+        spec:
+          connectorRef: account.Github
+          autoAbortPreviousExecutions: true
+          payloadConditions:
+            - key: targetBranch
+              operator: Equals
+              value: main
+          headerConditions: []
+          actions:
+            - Open
+            - Reopen
+            - Synchronize

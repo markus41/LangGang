@@ -1,0 +1,141 @@
+pipeline:
+  name: LangGang Security Scan
+  identifier: langgang_security
+  projectIdentifier: langgang
+  orgIdentifier: default
+  tags:
+    category: security
+  stages:
+    - stage:
+        name: SAST Scanning
+        identifier: sast_scanning
+        type: SecurityTests
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Bandit Security Scanner
+                  identifier: bandit_scan
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install bandit[toml]
+                      bandit -r langgang/ -f json -o bandit-report.json || true
+                      bandit -r langgang/ -f screen
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
+
+              - step:
+                  type: Run
+                  name: Safety Dependency Check
+                  identifier: safety_check
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install safety
+                      pip install -r requirements.txt
+                      safety check --json || true
+                      safety check
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
+
+              - step:
+                  type: Run
+                  name: Secrets Scanner
+                  identifier: secrets_scan
+                  spec:
+                    shell: Bash
+                    command: |
+                      echo "Scanning for hardcoded secrets..."
+                      # Install trufflehog
+                      pip install truffleHog
+                      truffleHog --regex --entropy=True . || true
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
+
+    - stage:
+        name: Dependency Analysis
+        identifier: dependency_analysis
+        type: SecurityTests
+        spec:
+          cloneCodebase: false
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: pip-audit
+                  identifier: pip_audit
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install pip-audit
+                      pip-audit -r requirements.txt --desc --format json -o pip-audit-report.json || true
+                      pip-audit -r requirements.txt --desc
+
+              - step:
+                  type: Run
+                  name: License Compliance
+                  identifier: license_check
+                  spec:
+                    shell: Bash
+                    command: |
+                      pip install pip-licenses
+                      pip install -r requirements.txt
+                      pip-licenses --format=markdown --output-file=licenses.md
+                      cat licenses.md
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - AllErrors
+                        action:
+                          type: Ignore
+
+    - stage:
+        name: Code Quality Gate
+        identifier: quality_gate
+        type: Approval
+        spec:
+          execution:
+            steps:
+              - step:
+                  type: HarnessApproval
+                  name: Security Review Approval
+                  identifier: security_approval
+                  spec:
+                    approvalMessage: "Review security scan results before proceeding"
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      userGroups:
+                        - account.Security_Team
+                    minimumCount: 1
+                    disallowPipelineExecutor: false
+                  timeout: 1d
+                  when:
+                    stageStatus: All
+                    condition: <+pipeline.stages.sast_scanning.status> == "Success"
+          failureStrategies:
+            - onFailure:
+                errors:
+                  - AllErrors
+                action:
+                  type: StageRollback

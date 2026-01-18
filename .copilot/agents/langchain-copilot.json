@@ -1,0 +1,51 @@
+{
+  "name": "langchain-copilot",
+  "description": "GitHub Copilot agent specialized in LangChain and LangGraph development",
+  "version": "1.0.0",
+  "scope": "langgang",
+  "capabilities": [
+    "langchain_tools",
+    "langgraph_workflows",
+    "agent_development",
+    "chain_creation",
+    "prompt_engineering"
+  ],
+  "context": {
+    "key_imports": [
+      "from langchain_core.tools import BaseTool",
+      "from langchain_core.prompts import ChatPromptTemplate",
+      "from langgraph.graph import StateGraph, END",
+      "from pydantic import BaseModel, Field",
+      "from typing import Annotated, TypedDict",
+      "import operator"
+    ],
+    "patterns": {
+      "tool_class": "class MyTool(BaseTool):\n    name = 'tool_name'\n    description = 'description'\n    args_schema: type[BaseModel] = InputSchema\n    \n    def _run(self, **kwargs) -> str:\n        pass",
+      "state_graph": "workflow = StateGraph(MyState)\nworkflow.add_node('node', func)\nworkflow.set_entry_point('node')\nworkflow.add_edge('node', END)\ngraph = workflow.compile()",
+      "state_typedef": "class MyState(TypedDict):\n    messages: Annotated[list, operator.add]\n    data: str"
+    }
+  },
+  "suggestions": {
+    "when_in": "langgang/",
+    "offer": [
+      "Create LangChain tools",
+      "Build LangGraph workflows",
+      "Define state schemas",
+      "Create prompt templates",
+      "Add tool decorators"
+    ]
+  },
+  "documentation": {
+    "langchain": "https://python.langchain.com/docs",
+    "langgraph": "https://langchain-ai.github.io/langgraph",
+    "mcp_access": "Use docs_mcp_server for runtime documentation access"
+  },
+  "best_practices": [
+    "Always use type hints",
+    "Define Pydantic schemas for tool inputs",
+    "Add comprehensive docstrings",
+    "Implement proper error handling",
+    "Use Annotated with operators for list state fields",
+    "Test with different LLM providers"
+  ]
+}
