@@ -2,21 +2,27 @@
   "mcpServers": {
     "langgang-templates": {
       "command": "python",
-      "args": ["-m", "langgang.mcp_server"],
+      "args": ["-m", "langgang.mcp_server_runner"],
       "env": {},
       "description": "LangGang template generation MCP server"
     },
     "langchain-docs": {
       "command": "python",
-      "args": ["-m", "langgang.docs_mcp_server"],
+      "args": ["-m", "langgang.docs_mcp_server_runner"],
       "env": {},
       "description": "LangChain documentation MCP server for development assistance"
     },
     "langgraph-docs": {
       "command": "python",
-      "args": ["-m", "langgang.docs_mcp_server"],
+      "args": ["-m", "langgang.docs_mcp_server_runner"],
       "env": {},
       "description": "LangGraph documentation MCP server for development assistance"
+    },
+    "llm-cli": {
+      "command": "python",
+      "args": ["-m", "langgang.llm_cli_mcp_server_runner"],
+      "env": {},
+      "description": "LLM CLI execution MCP server for Gemini, Codex, OpenAI, and Anthropic CLI tools"
     }
   },
   "server": {
@@ -61,6 +67,38 @@
       {
         "name": "list_available_docs",
         "description": "List all available documentation sources"
+      },
+      {
+        "name": "list_available_clis",
+        "description": "List available LLM CLI tools (Gemini, Codex, OpenAI, Anthropic)"
+      },
+      {
+        "name": "execute_gemini_cli",
+        "description": "Execute a Gemini CLI command"
+      },
+      {
+        "name": "execute_codex_cli",
+        "description": "Execute a Codex CLI command"
+      },
+      {
+        "name": "execute_openai_cli",
+        "description": "Execute an OpenAI CLI command"
+      },
+      {
+        "name": "execute_anthropic_cli",
+        "description": "Execute an Anthropic CLI command"
+      },
+      {
+        "name": "gemini_chat",
+        "description": "Execute a Gemini chat command with prompt"
+      },
+      {
+        "name": "codex_generate",
+        "description": "Execute a Codex generate command with prompt"
+      },
+      {
+        "name": "openai_chat",
+        "description": "Execute an OpenAI chat command with prompt"
       }
     ]
   }
