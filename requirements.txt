@@ -18,3 +18,10 @@ pytest-asyncio>=0.21.0
 black>=23.0.0
 ruff>=0.1.0
 mypy>=1.0.0
+pre-commit>=3.5.0
+bandit>=1.7.6
+
+# Optional: Gemini AI support
+# langchain-google-genai>=1.0.0
+# langchain-google-vertexai>=1.0.0
+# google-generativeai>=0.3.0

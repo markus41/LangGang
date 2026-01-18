@@ -13,12 +13,23 @@
     "retrieval_augmented_generation"
   ],
   "context": {
-    "frameworks": ["langchain", "langgraph", "openai", "anthropic"],
+    "frameworks": ["langchain", "langgraph", "openai", "anthropic", "google", "gemini"],
+    "llm_providers": {
+      "openai": "langchain_openai.ChatOpenAI",
+      "anthropic": "langchain_anthropic.ChatAnthropic",
+      "gemini": "langchain_google_genai.ChatGoogleGenerativeAI",
+      "vertex": "langchain_google_vertexai.ChatVertexAI"
+    },
     "patterns": {
-      "llm_chain": "from langchain_core.prompts import ChatPromptTemplate\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(temperature=0)\nprompt = ChatPromptTemplate.from_template('Translate {text} to {language}')\nchain = prompt | llm\nresult = chain.invoke({'text': 'hello', 'language': 'spanish'})",
-      "rag_pattern": "from langchain.vectorstores import FAISS\nfrom langchain.embeddings import OpenAIEmbeddings\nfrom langchain.chains import RetrievalQA\n\nvectorstore = FAISS.from_documents(docs, OpenAIEmbeddings())\nretriever = vectorstore.as_retriever()\nqa_chain = RetrievalQA.from_chain_type(llm, retriever=retriever)",
+      "llm_chain_openai": "from langchain_core.prompts import ChatPromptTemplate\nfrom langchain_openai import ChatOpenAI\n\nllm = ChatOpenAI(temperature=0, model='gpt-4')\nprompt = ChatPromptTemplate.from_template('Translate {text} to {language}')\nchain = prompt | llm\nresult = chain.invoke({'text': 'hello', 'language': 'spanish'})",
+      "llm_chain_gemini": "from langchain_core.prompts import ChatPromptTemplate\nfrom langchain_google_genai import ChatGoogleGenerativeAI\n\nllm = ChatGoogleGenerativeAI(model='gemini-pro', temperature=0)\nprompt = ChatPromptTemplate.from_template('Translate {text} to {language}')\nchain = prompt | llm\nresult = chain.invoke({'text': 'hello', 'language': 'spanish'})",
+      "llm_chain_vertex": "from langchain_core.prompts import ChatPromptTemplate\nfrom langchain_google_vertexai import ChatVertexAI\n\nllm = ChatVertexAI(model_name='gemini-pro', temperature=0)\nprompt = ChatPromptTemplate.from_template('Translate {text} to {language}')\nchain = prompt | llm\nresult = chain.invoke({'text': 'hello', 'language': 'spanish'})",
+      "rag_pattern": "from langchain_community.vectorstores import FAISS\nfrom langchain_openai import OpenAIEmbeddings\nfrom langchain.chains import RetrievalQA\n\nvectorstore = FAISS.from_documents(docs, OpenAIEmbeddings())\nretriever = vectorstore.as_retriever()\nqa_chain = RetrievalQA.from_chain_type(llm, retriever=retriever)",
+      "rag_pattern_gemini": "from langchain_community.vectorstores import FAISS\nfrom langchain_google_genai import GoogleGenerativeAIEmbeddings\nfrom langchain.chains import RetrievalQA\nfrom langchain_google_genai import ChatGoogleGenerativeAI\n\nembeddings = GoogleGenerativeAIEmbeddings(model='models/embedding-001')\nllm = ChatGoogleGenerativeAI(model='gemini-pro')\nvectorstore = FAISS.from_documents(docs, embeddings)\nretriever = vectorstore.as_retriever()\nqa_chain = RetrievalQA.from_chain_type(llm, retriever=retriever)",
       "agent_pattern": "from langchain.agents import AgentExecutor, create_openai_functions_agent\nfrom langchain import hub\n\nprompt = hub.pull('hwchase17/openai-functions-agent')\nagent = create_openai_functions_agent(llm, tools, prompt)\nagent_executor = AgentExecutor(agent=agent, tools=tools)\nresult = agent_executor.invoke({'input': 'query'})",
-      "langgraph_state": "from typing import TypedDict, Annotated\nfrom langgraph.graph import StateGraph, END\nimport operator\n\nclass State(TypedDict):\n    messages: Annotated[list, operator.add]\n    \nworkflow = StateGraph(State)\nworkflow.add_node('process', process_node)\nworkflow.set_entry_point('process')\nworkflow.add_edge('process', END)\ngraph = workflow.compile()"
+      "agent_pattern_gemini": "from langchain.agents import AgentExecutor, create_react_agent\nfrom langchain import hub\nfrom langchain_google_genai import ChatGoogleGenerativeAI\n\nllm = ChatGoogleGenerativeAI(model='gemini-pro')\nprompt = hub.pull('hwchase17/react')\nagent = create_react_agent(llm, tools, prompt)\nagent_executor = AgentExecutor(agent=agent, tools=tools)\nresult = agent_executor.invoke({'input': 'query'})",
+      "langgraph_state": "from typing import TypedDict, Annotated\nfrom langgraph.graph import StateGraph, END\nimport operator\n\nclass State(TypedDict):\n    messages: Annotated[list, operator.add]\n    \nworkflow = StateGraph(State)\nworkflow.add_node('process', process_node)\nworkflow.set_entry_point('process')\nworkflow.add_edge('process', END)\ngraph = workflow.compile()",
+      "streaming_gemini": "from langchain_google_genai import ChatGoogleGenerativeAI\n\nllm = ChatGoogleGenerativeAI(model='gemini-pro', streaming=True)\nfor chunk in llm.stream('Tell me a story'):\n    print(chunk.content, end='', flush=True)"
     }
   },
   "suggestions": {
@@ -55,7 +66,28 @@
     "Cache repeated queries",
     "Monitor token usage",
     "Version prompts for reproducibility",
-    "Test with different LLM providers",
-    "Implement fallback strategies"
-  ]
+    "Test with different LLM providers (OpenAI, Anthropic, Gemini)",
+    "Implement fallback strategies",
+    "Use Gemini for multimodal tasks (text, images, audio)",
+    "Leverage Gemini's long context window (up to 1M tokens)",
+    "Use Vertex AI for enterprise Gemini deployments",
+    "Consider cost differences between providers"
+  ],
+  "gemini_specific": {
+    "models": {
+      "gemini-pro": "General purpose, best for most tasks",
+      "gemini-pro-vision": "Multimodal, supports images",
+      "gemini-ultra": "Most capable, for complex tasks",
+      "embedding-001": "For embeddings and RAG"
+    },
+    "features": [
+      "Multimodal input (text, images, audio)",
+      "Long context window (up to 1M tokens)",
+      "Function calling support",
+      "Streaming responses",
+      "Safety settings configuration"
+    ],
+    "setup": "pip install langchain-google-genai langchain-google-vertexai",
+    "authentication": "Set GOOGLE_API_KEY environment variable or use Vertex AI service account"
+  }
 }

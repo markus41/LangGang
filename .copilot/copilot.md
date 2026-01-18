@@ -240,10 +240,51 @@ mypy langgang/
 python -m langgang.mcp_server
 ```
 
+## LLM Provider Support
+
+LangGang supports multiple LLM providers:
+
+### OpenAI
+```python
+from langchain_openai import ChatOpenAI
+llm = ChatOpenAI(model='gpt-4')
+```
+
+### Anthropic
+```python
+from langchain_anthropic import ChatAnthropic
+llm = ChatAnthropic(model='claude-3-opus-20240229')
+```
+
+### Google Gemini
+```python
+from langchain_google_genai import ChatGoogleGenerativeAI
+llm = ChatGoogleGenerativeAI(model='gemini-pro')
+```
+
+### Vertex AI (Gemini)
+```python
+from langchain_google_vertexai import ChatVertexAI
+llm = ChatVertexAI(model_name='gemini-pro')
+```
+
+**Install Gemini support:**
+```bash
+pip install langchain-google-genai langchain-google-vertexai
+# Or: pip install -e ".[gemini]"
+```
+
+**Set API key:**
+```bash
+export GOOGLE_API_KEY="your-api-key"
+```
+
 ## Documentation Resources
 
 - [LangChain Docs](https://python.langchain.com/docs)
 - [LangGraph Docs](https://langchain-ai.github.io/langgraph)
+- [Google Gemini Docs](https://ai.google.dev/docs)
+- [LangChain Gemini Integration](https://python.langchain.com/docs/integrations/llms/google_generative_ai)
 - [Cookiecutter Docs](https://cookiecutter.readthedocs.io)
 - [Copier Docs](https://copier.readthedocs.io)
 - [Maven Archetypes](https://maven.apache.org/guides/introduction/introduction-to-archetypes.html)

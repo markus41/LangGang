@@ -14,6 +14,7 @@ LangGang combines the power of LangChain, LangGraph, Cookiecutter, Copier, and M
 - **LangGraph Workflows**: Multi-step code generation with state management
 - **MCP Protocol**: Model Context Protocol servers for AI assistant integration
 - **Documentation Access**: Built-in MCP servers for LangChain/LangGraph docs
+- **LLM CLI Integration**: MCP tools for executing Gemini, Codex, OpenAI, and Anthropic CLI commands
 - **Harness CI/CD**: Automated pipeline configuration
 - **Claude Code & Copilot**: Enhanced IDE integration with agents and skills
 
@@ -193,6 +194,14 @@ LangGang provides Model Context Protocol (MCP) servers for AI assistant integrat
    - Get code examples
    - List available documentation
 
+3. **LLM CLI Server** (`langgang.llm_cli_mcp_server`)
+   - Execute Gemini CLI commands
+   - Execute Codex CLI commands
+   - Execute OpenAI CLI commands
+   - Execute Anthropic CLI commands
+   - Convenience methods for common operations (chat, generate)
+   - Automatic CLI availability detection
+
 ### Configuration
 
 MCP servers are configured in `mcp-config.json`:
@@ -220,7 +229,45 @@ python -m langgang.mcp_server
 
 # Start documentation server
 python -m langgang.docs_mcp_server
+
+# Start LLM CLI server
+python -m langgang.llm_cli_mcp_server
 ```
+
+### Using LLM CLI Tools
+
+The LLM CLI MCP server allows agents to execute CLI commands for various LLM providers:
+
+```python
+from langgang.llm_cli_mcp_server import LLMCliMCPServer
+
+server = LLMCliMCPServer()
+
+# Check available CLIs
+clis = server.list_available_clis()
+print(clis)  # {"gemini": True, "codex": False, ...}
+
+# Execute Gemini chat
+result = server.gemini_chat(
+    prompt="Explain LangChain",
+    model="gemini-pro",
+    temperature=0.7
+)
+
+# Execute Codex generate
+result = server.codex_generate(
+    prompt="Create a Python function",
+    model="gpt-4"
+)
+
+# Execute custom CLI command
+result = server.execute_gemini_cli(
+    command="chat",
+    args=["--model", "gemini-1.5-pro", "Your prompt here"]
+)
+```
+
+**Security**: All commands are sanitized to prevent command injection attacks.
 
 ## 🤖 LangChain & LangGraph
 
@@ -364,6 +411,49 @@ ruff check langgang/
 # Type checking
 mypy langgang/
 ```
+
+### Pre-commit Hooks
+
+LangGang uses pre-commit hooks to ensure code quality and consistency. Hooks automatically run on `git commit` to:
+
+- Format code with Black
+- Lint and fix issues with Ruff (including naming conventions)
+- Type check with mypy
+- Run tests to ensure repo works
+- Check for security issues with Bandit
+- Validate file formats (YAML, JSON, TOML)
+
+**Installation:**
+```bash
+# Install pre-commit (if not already installed)
+pip install pre-commit
+
+# Install git hooks
+pre-commit install
+
+# Or use the convenience script
+./scripts/install-hooks.sh  # Linux/Mac
+./scripts/install-hooks.ps1  # Windows PowerShell
+```
+
+**Manual execution:**
+```bash
+# Run hooks on all files
+pre-commit run --all-files
+
+# Run specific hook
+pre-commit run ruff --all-files
+```
+
+**Naming Conventions:**
+The hooks enforce consistent naming:
+- Functions/Methods: `snake_case`
+- Classes: `PascalCase`
+- Constants: `UPPER_SNAKE_CASE`
+- Private functions/methods: `_leading_underscore`
+- Variables: `snake_case`
+
+See `pyproject.toml` for full configuration.
 
 ### CI/CD
 

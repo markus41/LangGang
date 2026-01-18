@@ -22,6 +22,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Virtual environments
 .env
 .venv
 env/
@@ -30,34 +32,52 @@ ENV/
 env.bak/
 venv.bak/
 
-# Java / Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
-*.class
-*.jar
-*.war
-*.ear
-*.logs
-
-# IDE
-.idea/
+# IDEs
 .vscode/
+.idea/
 *.swp
 *.swo
 *~
 .DS_Store
 
-# Cookiecutter / Copier
-.copier-answers.yml
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+.nox/
 
-# Build artifacts
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# Pre-commit
+.pre-commit-cache/
+
+# Temporary files
+*.tmp
 *.log
-node_modules/
+*.bak
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Project specific
+generated_projects/
+*.pyc

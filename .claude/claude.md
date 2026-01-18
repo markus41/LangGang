@@ -152,6 +152,52 @@ graph = create_template_generation_graph()
 result = graph.invoke({"project_description": "Python Flask API"})
 ```
 
+## Slash Commands
+
+LangGang provides custom slash commands for Claude Code. All commands are defined in `.claude/slash-commands/`:
+
+### Template Commands
+- **`/list-templates [type]`** - List all available templates, optionally filtered by type
+- **`/generate-template <type> <name> [options]`** - Generate code from a template
+- **`/create-template <type> <name>`** - Create a new template
+
+### Documentation Commands
+- **`/search-docs <framework> <query>`** - Search LangChain or LangGraph documentation
+- **`/get-examples <framework> [category]`** - Get code examples from LangChain or LangGraph
+
+### LLM CLI Commands (NEW!)
+- **`/gemini-chat <prompt> [options]`** - Chat with Google Gemini using CLI
+- **`/codex-generate <prompt> [options]`** - Generate code using Codex CLI
+- **`/openai-chat <prompt> [options]`** - Chat with OpenAI using CLI
+- **`/list-clis`** - List available LLM CLI tools
+
+### Development Commands
+- **`/new-langchain-tool <name> <description>`** - Create a new LangChain tool
+- **`/new-mcp-tool <name> <description>`** - Create a new MCP tool
+- **`/run-test [path]`** - Run tests with pytest
+- **`/format-code [path]`** - Format code with black and ruff
+- **`/type-check [path]`** - Run mypy type checking
+- **`/check-health`** - Check repository health
+
+### Usage Examples
+
+```
+/list-templates
+/generate-template cookiecutter python-langchain-project
+/gemini-chat Explain LangChain --model=gemini-pro
+/codex-generate Create a Python function --model=gpt-4
+/openai-chat What is MCP? --model=gpt-4
+/list-clis
+/search-docs langchain agents
+/get-examples langgraph graphs
+/run-test
+/format-code
+/type-check
+/check-health
+```
+
+All LLM CLI commands require the respective CLI tools to be installed and configured.
+
 ## Documentation Resources
 
 - [LangChain Documentation](https://python.langchain.com/docs)

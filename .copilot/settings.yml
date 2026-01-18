@@ -59,12 +59,36 @@ frameworks:
     streaming: true
     # Use structured output
     structured_output: true
+    # LLM providers
+    providers:
+      - "openai"
+      - "anthropic"
+      - "google_gemini"
+      - "vertex_ai"
 
   langgraph:
     # Use TypedDict for state
     state_type: "TypedDict"
     # Use Annotated with operators
     annotations: true
+
+  gemini:
+    # Preferred models
+    default_model: "gemini-pro"
+    # Use 1.5-pro for long context
+    long_context_model: "gemini-1.5-pro"
+    # Multimodal support
+    vision_model: "gemini-pro-vision"
+    # Embeddings
+    embeddings_model: "models/embedding-001"
+    # Features
+    features:
+      - "multimodal_input"
+      - "long_context"
+      - "function_calling"
+      - "streaming"
+    # Authentication
+    auth_method: "GOOGLE_API_KEY or Vertex AI service account"
 
   pytest:
     # Use fixtures over setup/teardown
@@ -195,12 +219,23 @@ ai_ml:
     - "Use streaming for long responses"
     - "Cache repeated queries"
     - "Monitor token usage"
+    - "Support multiple LLM providers (OpenAI, Anthropic, Gemini)"
     
   langgraph:
     - "Use TypedDict for state definitions"
     - "Implement proper node error handling"
     - "Add checkpointing for long workflows"
     - "Use conditional edges for branching logic"
+  
+  gemini:
+    - "Use gemini-pro for general tasks"
+    - "Use gemini-1.5-pro for long context (1M tokens)"
+    - "Use gemini-pro-vision for multimodal tasks"
+    - "Set GOOGLE_API_KEY environment variable"
+    - "Use Vertex AI for production deployments"
+    - "Leverage streaming for better UX"
+    - "Configure safety settings appropriately"
+    - "Use embeddings for RAG applications"
 
 # Template development
 templates:
