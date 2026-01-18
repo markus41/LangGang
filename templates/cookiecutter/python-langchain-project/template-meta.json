@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "name": "python-langchain-project",
+  "display_name": "Python LangChain Project",
+  "description": "Production-ready Python project with LangChain integration, async support, and modern tooling",
+  "version": "1.0.0",
+  "author": "LangGang",
+  "tags": ["python", "langchain", "ai", "llm", "starter", "production"],
+  "category": "backend",
+  "difficulty": "beginner",
+  "frameworks": ["LangChain", "LangGraph", "Pydantic"],
+  "languages": ["Python"],
+  "prerequisites": ["python>=3.9", "pip"],
+  "features": [
+    "LangChain integration",
+    "Optional LangGraph support",
+    "Async/await patterns",
+    "Type hints throughout",
+    "pytest test setup",
+    "Modern project structure"
+  ],
+  "compatible_with": ["copier/langgraph-agent"]
+}
