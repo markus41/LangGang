@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "name": "langchain-java-archetype",
+  "display_name": "LangChain Java Archetype",
+  "description": "Java project archetype with LangChain4j integration for building LLM-powered applications",
+  "version": "1.0.0",
+  "author": "LangGang",
+  "tags": ["java", "langchain", "maven", "enterprise", "llm"],
+  "category": "backend",
+  "difficulty": "intermediate",
+  "frameworks": ["LangChain4j", "Maven", "Spring Boot"],
+  "languages": ["Java"],
+  "prerequisites": ["java>=17", "maven>=3.8"],
+  "features": [
+    "LangChain4j integration",
+    "Maven build system",
+    "Spring Boot compatible",
+    "Enterprise patterns",
+    "Dependency injection ready",
+    "Unit test scaffolding"
+  ],
+  "compatible_with": []
+}

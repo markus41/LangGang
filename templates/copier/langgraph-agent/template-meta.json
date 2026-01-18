@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "name": "langgraph-agent",
+  "display_name": "LangGraph Agent",
+  "description": "Stateful AI agent powered by LangGraph with workflow orchestration and tool integration",
+  "version": "1.0.0",
+  "author": "LangGang",
+  "tags": ["python", "langgraph", "agent", "ai", "workflow", "stateful"],
+  "category": "ai-agent",
+  "difficulty": "intermediate",
+  "frameworks": ["LangGraph", "LangChain"],
+  "languages": ["Python"],
+  "prerequisites": ["python>=3.9", "pip"],
+  "features": [
+    "LangGraph state machine",
+    "Tool integration",
+    "Workflow orchestration",
+    "Checkpointing support",
+    "Human-in-the-loop ready",
+    "Async execution"
+  ],
+  "compatible_with": ["cookiecutter/python-langchain-project"]
+}
