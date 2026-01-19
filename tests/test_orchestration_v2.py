@@ -681,7 +681,7 @@ class TestPriorityScheduler:
         result = await scheduler.get_result(task_id, timeout=1.0)
 
         scheduler.stop()
-        await run_task
+        _ = await run_task  # Ensure scheduler.run completes before finishing test
 
         assert result == "expected_result"
 
